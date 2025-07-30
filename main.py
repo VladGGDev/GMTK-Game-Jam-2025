@@ -1,19 +1,18 @@
 import engine
-import tests.camtestscene, tests.tweentestscene, tests.turntest, tests.uitestscene
+import tests.cartestscene, tests.uitestscene
 
 
 # Setup
 engine.run(
     engine.SceneManager(
         {
-            "Tweening" : tests.tweentestscene.TweenTestScene(),
-            "Camera" : tests.camtestscene.CameraTestScene(),
-            "Turn" : tests.turntest.TurnTestScene(),
+            "Car" : tests.cartestscene.CarTestScene(),
             "UI" : tests.uitestscene.UiTestScene()
         },
-        "UI"
+        "Car"
     ),
     {
-        "Main" : engine.DrawPass((256, 256), 0, None, (128, 128, 128, 255)),
-        "UI" : engine.DrawPass.create_ui((256, 256), 0)
-    })
+        "Main" : engine.DrawPass((320, 180), 0, None, (254, 231, 97, 255)),
+        "UI" : engine.DrawPass.create_ui((320, 180), 99)
+    },
+    True)

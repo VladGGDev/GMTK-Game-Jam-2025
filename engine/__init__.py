@@ -168,17 +168,23 @@ def run(scene_manager_init: SceneManager | None = None,
         if can_render:
             scene_manager.draw() # Call draw on all  actors
             
-            screen_aspect_ratio = screen.get_width() / screen.get_height()
-            
             sorted_draw_passes = sorted(draw_passes.values(), key=lambda dp : dp.order)
             for draw_pass in sorted_draw_passes:
-                if screen.get_height() < screen.get_width():
-                    desired_scale = (screen.get_width() / screen_aspect_ratio, screen.get_height())
-                else: # H > W
-                    desired_scale = (screen.get_height() * screen_aspect_ratio, screen.get_width())
+                dp_size = draw_pass.surface.get_size()
+                dp_aspect_ratio = dp_size[0] / dp_size[1]
+                window_size = tuple(window.size)
+                
+                if window_size[0] < window_size[1] * dp_aspect_ratio:
+                    # Horizontal black bars
+                    desired_scale = (window_size[0], window_size[0] / dp_aspect_ratio)
+                    render_pos = (0, (window_size[1] - desired_scale[1]) / 2)
+                else:
+                    # Vertical black bars
+                    desired_scale = (window_size[1] * dp_aspect_ratio, window_size[1])
+                    render_pos = ((window_size[0] - desired_scale[0]) / 2, 0)
+                
                 scaled = pygame.transform.scale(draw_pass.draw(), desired_scale)
-                pos = ((screen.get_width() - desired_scale[0]) / 2, (screen.get_height() - desired_scale[1]) / 2)
-                screen.blit(scaled, pos) # Actually draw on screen
+                screen.blit(scaled, render_pos) # Actually draw on screen
             pygame.display.flip()
 
         clock.tick(1000)

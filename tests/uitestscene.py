@@ -1,4 +1,4 @@
-import pygame, engine, game.ui as ui
+import pygame, engine, game.actors.ui as ui
 
 
 class UiTestScene(engine.Scene):
