@@ -2,6 +2,7 @@ import engine, pygame, random
 from engine.spritesheet import SpriteSheet
 from game.actors.car import Car
 from game.actors.obstacle import Obstacle
+from game.utility.circlecollidersolver import solve_all_circle_collisions
 
 
 class CarScene(engine.Scene):
@@ -33,6 +34,10 @@ class CarScene(engine.Scene):
         if engine.get_key_down(pygame.K_ESCAPE):
             engine.running = False
         super().update()
+    
+    def fixed_update(self):
+        super().fixed_update()
+        solve_all_circle_collisions({"Obstacle"})
     
     def draw(self):
         # Draw decorations
