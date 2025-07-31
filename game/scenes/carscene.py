@@ -24,6 +24,7 @@ class CarScene(engine.Scene):
         #         random.uniform(-self.HALF_MAP_SIZE[0], self.HALF_MAP_SIZE[0]),
         #         random.uniform(-self.HALF_MAP_SIZE[1], self.HALF_MAP_SIZE[1])))
         # super().__init__([Car()] + obstacles)
+        super().__init__([Car()])
     
     def update(self):
         if engine.get_key_down(pygame.K_ESCAPE):
@@ -32,10 +33,10 @@ class CarScene(engine.Scene):
     
     def draw(self):
         # Draw road
-        ROAD_WIDTH = 80
-        ROAD_LINE_DISTANCE = 24
-        ROAD_LINE_LENGTH = 24
-        ROAD_LINE_WIDTH = 4
+        ROAD_WIDTH = 72
+        ROAD_LINE_DISTANCE = 16
+        ROAD_LINE_LENGTH = 16
+        ROAD_LINE_WIDTH = 2
         ROAD_MARGIN_LINE_PADDING = 4
         ROAD_MARGIN_LINE_WIDTH = 2
         ROAD_BLACK_COLOR = pygame.Color(79, 82, 117)

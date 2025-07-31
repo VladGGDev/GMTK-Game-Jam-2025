@@ -15,18 +15,21 @@ class Car(engine.Actor):
         self.DRIFT_TURN_SPEED = 270 * pi / 180 # radians per second
         self.MAX_DRIFT_ENERGY = 1 # Seconds of drift
         
-        # Collider initialization
+        # Other initialization
         super().__init__(colliders.CircleCollider(pygame.Vector2(0, 0), 4, "Car"))
+        self.texture = pygame.image.load("game/sprites/Masina.png")
         
         # Dynamic values
         self.direction = 0
         self.speed = self.MIN_SPEED
         self.drift_energy = 0
+        self.last_dir = 0
     
     def update(self):
         pressed = engine.get_key
         
         dir = int(pressed(pygame.K_a) or pressed(pygame.K_LEFT)) - int(pressed(pygame.K_d) or pressed(pygame.K_RIGHT))
+        if dir != 0: self.last_dir = dir
         max_sp = lerputil.lerp(self.MAX_SPEED, self.MAX_DRIFT_SPEED, easings.ease_out_cubic(self.drift_energy / self.MAX_DRIFT_ENERGY))
         turn_sp = self.TURN_SPEED if not pressed(pygame.K_SPACE) else self.DRIFT_TURN_SPEED
         
@@ -66,8 +69,9 @@ class Car(engine.Actor):
     def draw(self):
         engine.draw_passes["Main"].blit(
             99,
-            engine.DrawPass.get_pixel(pygame.Color("red" if self.drift_energy > 0 else "blue"), (8, 12)),
+            self.texture,
+            # engine.DrawPass.get_pixel(pygame.Color("red" if self.drift_energy > 0 else "blue"), (8, 12)),
             self.collider.position,
             (1, 1),
-            degrees(self.direction + (pi / 1.75 if self.drift_energy / self.MAX_DRIFT_ENERGY > 0.5 else 0))
+            degrees(self.direction + (pi / 2.5 * self.last_dir if self.drift_energy / self.MAX_DRIFT_ENERGY > 0.5 else 0))
         )
