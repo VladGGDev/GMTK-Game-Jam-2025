@@ -1,8 +1,7 @@
-from pygame import Vector2
+from pygame import Vector2, Rect
 
 
 class Camera:
-    # def __init__(self, position: tuple[float, float] | Vector2 = (0, 0), height: float = 1080, aspect_ratio: float = 16/9):
     def __init__(self, position: tuple[float, float] | Vector2 = (0, 0), resolution: tuple[float, float] = (1920, 1080)):
         self.position = Vector2(position)
         self.resolution = resolution
@@ -49,3 +48,12 @@ class Camera:
     def resolution(self, value: tuple[float, float]):
         self.__height = value[1]
         self.__aspect_ratio = value[0] / value[1]
+    
+    @property
+    def rect(self) -> Rect:
+        return Rect(self.position - Vector2(self.half_resolution), self.resolution)
+    
+    @rect.setter
+    def rect(self, value: Rect):
+        self.position = value.center
+        self.resolution = value.size
