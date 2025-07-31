@@ -1,5 +1,5 @@
 import engine
-import game.scenes.carscene, tests.uitestscene, tests.circlecollisionsolvertestscene
+import game.scenes.carscene, tests.uitestscene, tests.circlecollisionsolvertestscene,tests.shaketest
 
 
 # Setup
@@ -12,13 +12,15 @@ engine.run(
             "UI" : tests.uitestscene.UiTestScene(),
             
             "Car" : game.scenes.carscene.CarScene(),
+            "Camera Shake" : tests.shaketest.ShakeTest(),
         },
-        "Car"
+        "Camera Shake"
     ),
     {
         # "Main" : engine.DrawPass((320, 180), 0, None, (254, 231, 97, 255)),
         "Main" : engine.DrawPass((480, 270), 0, None, (254, 231, 97, 255)),
         "UI" : engine.DrawPass.create_ui((480, 270), 99)
+        
     },
     # True)
     False)
