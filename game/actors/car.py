@@ -68,7 +68,7 @@ class Car(engine.Actor):
     
     def draw(self):
         engine.draw_passes["Main"].blit(
-            99,
+            self.collider.position.y,
             self.texture,
             # engine.DrawPass.get_pixel(pygame.Color("red" if self.drift_energy > 0 else "blue"), (8, 12)),
             self.collider.position,

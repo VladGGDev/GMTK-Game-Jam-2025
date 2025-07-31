@@ -14,7 +14,7 @@ engine.run(
     ),
     {
         # "Main" : engine.DrawPass((320, 180), 0, None, (254, 231, 97, 255)),
-        "Main" : engine.DrawPass((640, 360), 0, None, (254, 231, 97, 255)),
-        "UI" : engine.DrawPass.create_ui((640, 360), 99)
+        "Main" : engine.DrawPass((480, 270), 0, None, (254, 231, 97, 255)),
+        "UI" : engine.DrawPass.create_ui((480, 270), 99)
     },
     True)
