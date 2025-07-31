@@ -2,6 +2,7 @@ import engine, engine.collider
 
 class ScoreManager(engine.Actor):
     def __init__(self) -> None :
+        super().__init__()
         self.score : int = 0
 
     def add_points(self, points : int) -> None :

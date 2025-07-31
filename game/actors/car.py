@@ -4,6 +4,7 @@ from math import pi, sin, cos, degrees
 
 class Car(engine.Actor):
     def __init__(self):
+        super().__init__()
         # Constants
         self.MAX_SPEED = 150
         self.MAX_DRIFT_SPEED = 200

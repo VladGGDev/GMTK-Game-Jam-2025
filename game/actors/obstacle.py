@@ -7,6 +7,7 @@ class Obstacle(engine.Actor):
                 collider_radius: float,
                 texture: pygame.Surface,
                 pivot: tuple[float, float] = (0.5, 0.5)):
+        super().__init__()
         self.position = position
         self.collider_radius = collider_radius
         self.texture = texture
