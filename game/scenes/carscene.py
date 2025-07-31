@@ -25,7 +25,7 @@ class CarScene(engine.Scene):
             self.decorations.append((rand_pos[0], rand_pos[1], random.randrange(0, self.deco_tiles.get_num_cells())))
         
         # Initialize actors
-        OBSTACLE_COUNT = 100
+        OBSTACLE_COUNT = 60
         obstacles = list[engine.Actor]()
         for _ in range(OBSTACLE_COUNT):
             rand_pos = random_position()
@@ -52,8 +52,10 @@ class CarScene(engine.Scene):
         engine.draw_passes["Main"].blit(-9999999, self.background, (256, -256))
         engine.draw_passes["Main"].blit(-9999999, self.background, (256, 256))
         # Draw decorations
-        # for deco in self.decorations:
-        #     engine.draw_passes["Main"].blit(-9999999, self.deco_tiles.texture, (deco[0], deco[1]), (4, 2), source_rect=self.deco_tiles[deco[2]])
+        for deco in self.decorations:
+            pos = (deco[0], deco[1])
+            if engine.draw_passes["Main"].camera.rect.collidepoint(pos):
+                engine.draw_passes["Main"].blit(-9999999, self.deco_tiles.texture, pos, (4, 2), source_rect=self.deco_tiles[deco[2]])
         
         # Draw road
         ROAD_LINE_DISTANCE = 16

@@ -55,7 +55,7 @@ class Car(engine.Actor):
         # engine.draw_passes["Main"].camera.position = self.collider.position
         # Framerate-independent damping
         engine.draw_passes["Main"].camera.position = lerputil.vector2_lerp(
-            engine.draw_passes["Main"].camera.position,
+            pygame.Vector2(engine.draw_passes["Main"].camera.position),
             self.collider.position,
             1 - 0.005**engine.delta_time())
     
