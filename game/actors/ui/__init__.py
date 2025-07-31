@@ -8,7 +8,6 @@ UNIVERSAL_UI_DRAW_PASS: str = "UI"
 
 class UiElement(engine.Actor):
     def __init__(self, rect: pygame.Rect, draw_pass: str = UNIVERSAL_UI_DRAW_PASS, order: int = 0):
-        super().__init__(engine.collider.NoCollider)
         self.rect = rect
         self.draw_pass = draw_pass
         self.order = order

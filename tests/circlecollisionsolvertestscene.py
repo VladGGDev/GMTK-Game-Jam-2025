@@ -6,6 +6,9 @@ from game.utility.circlecollidersolver import *
 class CircleCollisionSolverTestScene(engine.Scene):
     def __init__(self):
         super().__init__([])
+    
+    def start(self):
+        super().start()
         self.colliders = [
             CircleCollider(pygame.Vector2(0, -100), 10),
             CircleCollider(pygame.Vector2(0, -100), 10),

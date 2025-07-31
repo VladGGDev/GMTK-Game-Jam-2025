@@ -4,8 +4,8 @@ import engine.collider
 
 class Actor(ABC):
     @abstractmethod
-    def __init__(self, collider: engine.collider.Collider):
-        self.collider = collider
+    def __init__(self):
+        self.collider = engine.collider.NoCollider()
 
     def start(self):
         pass

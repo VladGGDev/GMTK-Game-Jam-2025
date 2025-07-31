@@ -16,7 +16,6 @@ class Car(engine.Actor):
         self.MAX_DRIFT_ENERGY = 1 # Seconds of drift
         
         # Other initialization
-        super().__init__(colliders.CircleCollider(pygame.Vector2(0, 0), 4, "Car"))
         self.texture = pygame.image.load("game/sprites/Masina.png")
         
         # Dynamic values
@@ -24,6 +23,9 @@ class Car(engine.Actor):
         self.speed = self.MIN_SPEED
         self.drift_energy = 0
         self.last_dir = 0
+    
+    def start(self):
+        self.collider = colliders.CircleCollider(pygame.Vector2(0, 0), 4, "Car")
     
     def update(self):
         pressed = engine.get_key

@@ -22,6 +22,7 @@ class Scene(Actor):
             actor.fixed_update()
 
     def end(self):
+        engine.collider.all_colliders.clear()
         for actor in self.actors:
             actor.end()
 
@@ -55,6 +56,7 @@ class Scene(Actor):
         actor.start()
     
     def destroy_actor(self, actor: Actor):
+        engine.collider.all_colliders.remove(actor.collider)
         self.actors.remove(actor)
         actor.end()
         
