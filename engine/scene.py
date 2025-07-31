@@ -66,6 +66,7 @@ class SceneManager(Actor):
         if start_scene not in scenes:
             raise ValueError("start_scene is not a key in the scenes dict")
         self.current_scene = scenes[start_scene]
+        engine.collider.all_colliders.clear()
     
     @classmethod
     def empty(cls) -> "SceneManager":

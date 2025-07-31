@@ -8,7 +8,7 @@ from game.utility.circlecollidersolver import solve_all_circle_collisions
 
 class CarScene(engine.Scene):
     def __init__(self):
-        self.MAP_SIZE = (1536, 1536) # Halfway between 1024 and 2048
+        self.MAP_SIZE = (1024, 1024)
         self.HALF_MAP_SIZE = (self.MAP_SIZE[0] // 2, self.MAP_SIZE[1] // 2)
         self.ROAD_WIDTH = 72
         def random_position() -> tuple[int, int]:
@@ -46,10 +46,14 @@ class CarScene(engine.Scene):
         solve_all_circle_collisions({"Obstacle"})
     
     def draw(self):
+        # Draw background
+        engine.draw_passes["Main"].blit(-9999999, self.background, (-256, -256))
+        engine.draw_passes["Main"].blit(-9999999, self.background, (-256, 256))
+        engine.draw_passes["Main"].blit(-9999999, self.background, (256, -256))
+        engine.draw_passes["Main"].blit(-9999999, self.background, (256, 256))
         # Draw decorations
-        # engine.draw_passes["Main"].blit(-9999999, self.background, (0, 0))
-        for deco in self.decorations:
-            engine.draw_passes["Main"].blit(-9999999, self.deco_tiles.texture, (deco[0], deco[1]), (4, 2), source_rect=self.deco_tiles[deco[2]])
+        # for deco in self.decorations:
+        #     engine.draw_passes["Main"].blit(-9999999, self.deco_tiles.texture, (deco[0], deco[1]), (4, 2), source_rect=self.deco_tiles[deco[2]])
         
         # Draw road
         ROAD_LINE_DISTANCE = 16
