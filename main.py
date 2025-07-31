@@ -1,5 +1,5 @@
 import engine
-import tests.cartestscene, tests.uitestscene
+import game.scenes.carscene, tests.uitestscene
 
 
 # Setup
@@ -7,8 +7,8 @@ engine.unscaled_fixed_delta_time = 1 / 144
 engine.run(
     engine.SceneManager(
         {
-            "Car" : tests.cartestscene.CarTestScene(),
-            "UI" : tests.uitestscene.UiTestScene()
+            "UI" : tests.uitestscene.UiTestScene(),
+            "Car" : game.scenes.carscene.CarScene(),
         },
         "Car"
     ),
