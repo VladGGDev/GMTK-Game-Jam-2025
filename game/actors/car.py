@@ -18,6 +18,7 @@ class Car(engine.Actor):
         
         # Other initialization
         self.texture = pygame.image.load("game/sprites/Masina.png")
+        self.shadow = Car.create_shadow(self.texture)
         
         # Dynamic values
         self.direction = 0
@@ -70,11 +71,28 @@ class Car(engine.Actor):
         )
     
     def draw(self):
+        direction = degrees(self.direction + (pi / 2.5 * self.last_dir if self.drift_energy / self.MAX_DRIFT_ENERGY > 0.5 else 0))
+        # Draw shadow
+        engine.draw_passes["Main"].blit(
+            self.collider.position.y,
+            self.shadow,
+            self.collider.position + pygame.Vector2(0, 2),
+            (1, 1),
+            direction
+        )
+        # Draw car
         engine.draw_passes["Main"].blit(
             self.collider.position.y,
             self.texture,
-            # engine.DrawPass.get_pixel(pygame.Color("red" if self.drift_energy > 0 else "blue"), (8, 12)),
             self.collider.position,
             (1, 1),
-            degrees(self.direction + (pi / 2.5 * self.last_dir if self.drift_energy / self.MAX_DRIFT_ENERGY > 0.5 else 0))
+            direction
         )
+    
+    @staticmethod
+    def create_shadow(source: pygame.Surface, alpha: int = 64) -> pygame.Surface:
+        surf = pygame.Surface(source.get_size(), pygame.SRCALPHA)
+        surf.blit(source, (0, 0))
+        surf.fill(pygame.Color(0, 0, 0), special_flags=pygame.BLEND_MULT)
+        surf.set_alpha(alpha)
+        return surf

@@ -72,8 +72,8 @@ class DrawPass:
                                 int(source_rect.top * scale[1] / source.get_height()))
         
         # Offset the pivot of the object relative to the camera and center the camera on (0, 0)
-        position = ((position[0] - campos.x - actualscale[0] * pivot[0]) * worldtocamsz[0] + halfsurfsz[0],
-                    (position[1] - campos.y - actualscale[1] * pivot[1]) * worldtocamsz[1] + halfsurfsz[1])
+        position = ((position[0] - campos[0] - actualscale[0] * pivot[0]) * worldtocamsz[0] + halfsurfsz[0],
+                    (position[1] - campos[1] - actualscale[1] * pivot[1]) * worldtocamsz[1] + halfsurfsz[1])
         
         # Rotation operations
         if rotation != 0:

@@ -24,7 +24,7 @@ class CarScene(engine.Scene):
             rand_pos = random_position()
             self.decorations.append((rand_pos[0], rand_pos[1], random.randrange(0, self.deco_tiles.get_num_cells())))
         
-        # Initialize actors
+        # Initialize obstacle actors
         OBSTACLE_COUNT = 60
         obstacles = list[engine.Actor]()
         for _ in range(OBSTACLE_COUNT):
