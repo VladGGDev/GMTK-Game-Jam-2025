@@ -8,17 +8,20 @@ from game.utility.circlecollidersolver import solve_all_circle_collisions
 class CarScene(engine.Scene):
     def __init__(self):
         self.MAP_SIZE = (1536, 1536) # Halfway between 1024 and 2048
-        self.HALF_MAP_SIZE = (self.MAP_SIZE[0] / 2, self.MAP_SIZE[1] / 2)
+        self.HALF_MAP_SIZE = (self.MAP_SIZE[0] // 2, self.MAP_SIZE[1] // 2)
         self.ROAD_WIDTH = 72
-        def random_position() -> tuple[float, float]:
-            return (random.uniform(-self.HALF_MAP_SIZE[0], self.HALF_MAP_SIZE[0]),
-                random.uniform(-self.HALF_MAP_SIZE[1], self.HALF_MAP_SIZE[1]))
+        def random_position() -> tuple[int, int]:
+            return (random.randrange(-self.HALF_MAP_SIZE[0], self.HALF_MAP_SIZE[0]),
+                random.randrange(-self.HALF_MAP_SIZE[1], self.HALF_MAP_SIZE[1]))
         
         # Generating decoration
+        self.deco_tiles = SpriteSheet("game/sprites/Decorations.png", (8, 8))
+        self.background = pygame.image.load("game/sprites/Sand Background.png")
         DECORATION_COUNT = 2000
-        self.decorations = list[tuple[float, float]]()
+        self.decorations = list[tuple[float, float, int]]()
         for _ in range(DECORATION_COUNT):
-            self.decorations.append(random_position())
+            rand_pos = random_position()
+            self.decorations.append((rand_pos[0], rand_pos[1], random.randrange(0, self.deco_tiles.get_num_cells())))
         
         # Initialize actors
         OBSTACLE_COUNT = 100
@@ -41,8 +44,9 @@ class CarScene(engine.Scene):
     
     def draw(self):
         # Draw decorations
+        # engine.draw_passes["Main"].blit(-9999999, self.background, (0, 0))
         for deco in self.decorations:
-            engine.draw_passes["Main"].blit(-9999999, engine.DrawPass.get_pixel(pygame.Color(255, 255, 255, 128), (8, 8)), deco)
+            engine.draw_passes["Main"].blit(-9999999, self.deco_tiles.texture, (deco[0], deco[1]), (4, 2), source_rect=self.deco_tiles[deco[2]])
         
         # Draw road
         ROAD_LINE_DISTANCE = 16
