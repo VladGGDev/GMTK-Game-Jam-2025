@@ -1,5 +1,6 @@
 from engine.actor import Actor
 from engine.camera import Camera
+import engine.collider
 from typing import Any
 
 
@@ -75,6 +76,7 @@ class SceneManager(Actor):
             raise ValueError("new_scene_key is not a key in the scenes dict")
         self.end()
         self.current_scene = self.scenes[new_scene_key]
+        engine.collider.all_colliders.clear()
         self.start()
 
     def start(self):
