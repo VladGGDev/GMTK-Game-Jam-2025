@@ -127,3 +127,9 @@ class DrawPass:
         surf = pygame.Surface(size, pygame.SRCALPHA)
         surf.fill(color)
         return surf
+    
+    @staticmethod
+    def get_circle(color: pygame.Color, radius: float, width: int = 0) -> Surface:
+        surf = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
+        pygame.draw.circle(surf, color, (radius, radius), radius, width)
+        return surf
