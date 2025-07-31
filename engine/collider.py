@@ -18,8 +18,11 @@ class Collider(ABC):
 
 
 class NoCollider(Collider):
-    def __init__(self, position: Vector2):
+    def __init__(self, position: Vector2 = Vector2(0, 0)):
         super().__init__(position)
+    
+    def check(self, other: Collider) -> bool:
+        return False
 
 
 class BoxCollider(Collider):

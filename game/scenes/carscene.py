@@ -1,6 +1,7 @@
 import engine, pygame, random
 from engine.spritesheet import SpriteSheet
 from game.actors.car import Car
+from game.actors.scoremanager import ScoreManager
 from game.actors.obstacle import Obstacle
 from game.utility.circlecollidersolver import solve_all_circle_collisions
 
@@ -31,7 +32,9 @@ class CarScene(engine.Scene):
             if abs(rand_pos[0]) <= self.ROAD_WIDTH / 2 + 8:
                 continue
             obstacles.append(Obstacle(rand_pos, 2, engine.DrawPass.get_pixel(pygame.Color("green"), (4, 64)), (0.5, 1)))
-        super().__init__([Car()] + obstacles)
+        
+        # Adding actors
+        super().__init__([ScoreManager(), Car()] + obstacles)
     
     def update(self):
         if engine.get_key_down(pygame.K_ESCAPE):
