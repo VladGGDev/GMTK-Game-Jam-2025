@@ -91,7 +91,7 @@ class Car(engine.Actor):
     
     @staticmethod
     def create_shadow(source: pygame.Surface, alpha: int = 64) -> pygame.Surface:
-        surf = pygame.Surface(source.get_size(), pygame.SRCALPHA)
+        surf = pygame.Surface(source.get_size(), source.get_flags())
         surf.blit(source, (0, 0))
         surf.fill(pygame.Color(0, 0, 0), special_flags=pygame.BLEND_MULT)
         surf.set_alpha(alpha)

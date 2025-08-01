@@ -12,7 +12,7 @@ class Obstacle(engine.Actor):
         self.collider_radius = collider_radius
         self.texture = texture
         # self.shadow = Obstacle.create_shadow((collider_radius * 3.5, collider_radius * 2.5))
-        self.shadow = car.Car.create_shadow(self.texture, 32)
+        self.shadow = pygame.transform.flip(car.Car.create_shadow(self.texture, 32), False, True)
         self.pivot = pivot
     
     def start(self):
@@ -29,8 +29,8 @@ class Obstacle(engine.Actor):
             self.collider.position.y,
             self.shadow,
             self.collider.position,
-            (1, 1),
-            180,
+            (1, 0.5),
+            0,
             (0.5, 0))
         # Draw self
         engine.draw_passes["Main"].blit(
@@ -40,7 +40,7 @@ class Obstacle(engine.Actor):
             pivot=self.pivot)
     
     @staticmethod
-    def create_shadow(ellipse_size: tuple[float, float], alpha: int = 64) -> pygame.Surface:
+    def create_circle_shadow(ellipse_size: tuple[float, float], alpha: int = 64) -> pygame.Surface:
         surf = pygame.Surface(ellipse_size, pygame.SRCALPHA)
         pygame.draw.ellipse(surf, pygame.Color(0, 0, 0, alpha), pygame.Rect((0, 0), ellipse_size))
-        return surf
+        return surf        
