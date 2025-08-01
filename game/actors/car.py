@@ -1,21 +1,25 @@
 import engine, pygame, engine.collider as colliders, engine.tweening.lerpfuncs as lerputil, engine.tweening.easingfuncs as easings
 from game.actors.decalmanager import DecalManager
 from math import pi, sin, cos, degrees
+import engine.tweening
+from engine.tweening import easingfuncs, lerpfuncs, Tween
 
 
 class Car(engine.Actor):
     def __init__(self):
         super().__init__()
         # Constants
-        self.MAX_SPEED = 150
+        self.MAX_SPEED = 175
         self.MAX_DRIFT_SPEED = 200
-        self.MIN_SPEED = 80
+        self.MIN_SPEED = 0
         self.ACCELERATION = self.MAX_SPEED / 0.25
         self.DECELERATION = self.MAX_SPEED / 1
         self.FRICTION_DECELERATION = self.MAX_SPEED / 5
         self.TURN_SPEED = 120 * pi / 180 # radians per second
         self.DRIFT_TURN_SPEED = 270 * pi / 180 # radians per second
         self.MAX_DRIFT_ENERGY = 1 # Seconds of drift
+        self.DRIFT_GFX_MIN_PERCENTAGE = 0.5
+        self.DRIFT_GFX_DIRECTION = pi / 3
         
         # Other initialization
         self.texture = pygame.image.load("game/sprites/Masina.png")
@@ -26,14 +30,17 @@ class Car(engine.Actor):
         self.speed = self.MIN_SPEED
         self.drift_energy = 0
         self.last_dir = 0
+        self.gfx_direction = self.direction
         
         # Loop data
         self.drift_points = list[pygame.Vector2]()
     
     def start(self):
+        # Other initializations
         self.collider = colliders.CircleCollider(pygame.Vector2(0, 0), 4, "Car")
         self.decal_manager_ref = engine.scene_manager.current_scene.get_actor(DecalManager)
         self.skid_mark_sprite = pygame.image.load("game/sprites/Skid Marks.png")
+        
     
     def update(self):
         pressed = engine.get_key
@@ -47,7 +54,6 @@ class Car(engine.Actor):
         self.drift_energy = max(self.drift_energy - engine.delta_time(), 0)
         if pressed(pygame.K_SPACE) and dir != 0:
             self.drift_energy = self.MAX_DRIFT_ENERGY
-        
         
         # Acceleration controls
         if pressed(pygame.K_w) or pressed(pygame.K_UP) or self.drift_energy > 0:
@@ -68,6 +74,12 @@ class Car(engine.Actor):
             pygame.Vector2(engine.draw_passes["Main"].camera.position),
             self.collider.position,
             1 - 0.005**engine.delta_time())
+        
+        # Smooth direction
+        self.gfx_direction = lerputil.lerp(
+            self.gfx_direction,
+            self.get_drift_additional_rotation(),
+            1 - 0.0005**engine.delta_time())
     
     def fixed_update(self):
         # Loop logic
@@ -77,7 +89,7 @@ class Car(engine.Actor):
                 15,
                 self.skid_mark_sprite,
                 pygame.Vector2(self.collider.position),
-                rotation=degrees(self.direction + (pi / 2 * self.last_dir if self.drift_energy / self.MAX_DRIFT_ENERGY > 0.5 else 0))
+                rotation=degrees(self.direction + self.get_drift_additional_rotation())
             )
             if len(self.drift_points) > 1:
                 # Check for completed loop
@@ -99,7 +111,7 @@ class Car(engine.Actor):
         )
     
     def draw(self):
-        direction = degrees(self.direction + (pi / 2.5 * self.last_dir if self.drift_energy / self.MAX_DRIFT_ENERGY > 0.5 else 0))
+        direction = degrees(self.direction + self.gfx_direction)
         # Draw shadow
         engine.draw_passes["Main"].blit(
             self.collider.position.y,
@@ -116,14 +128,10 @@ class Car(engine.Actor):
             (1, 1),
             direction
         )
-        
-        # Debug draw all drift points
-        # for p in zip(self.drift_points, self.drift_points):
-        #     engine.draw_passes["Main"].blit(
-        #         99999,
-        #         engine.DrawPass.get_pixel(pygame.Color(0, 0, 0, 64), (1, 8)),
-        #         p[0],
-        #     )
+    
+    
+    def get_drift_additional_rotation(self) -> float:
+        return self.DRIFT_GFX_DIRECTION * self.last_dir if self.drift_energy / self.MAX_DRIFT_ENERGY > self.DRIFT_GFX_MIN_PERCENTAGE else 0
     
     
     
