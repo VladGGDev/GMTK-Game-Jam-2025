@@ -4,6 +4,7 @@ from game.actors.car import Car
 from game.actors.scoremanager import ScoreManager
 from game.actors.obstacle import Obstacle
 from game.utility.circlecollidersolver import solve_all_circle_collisions
+from game.actors.decalmanager import DecalManager
 
 
 class CarScene(engine.Scene):
@@ -34,7 +35,7 @@ class CarScene(engine.Scene):
             obstacles.append(Obstacle(rand_pos, 2, engine.DrawPass.get_pixel(pygame.Color("green"), (4, 64)), (0.5, 1)))
         
         # Adding actors
-        super().__init__([ScoreManager(), Car()] + obstacles)
+        super().__init__([ScoreManager(), DecalManager(), Car()] + obstacles)
     
     def update(self):
         if engine.get_key_down(pygame.K_ESCAPE):
@@ -55,7 +56,7 @@ class CarScene(engine.Scene):
         for deco in self.decorations:
             pos = (deco[0], deco[1])
             if engine.draw_passes["Main"].camera.rect.collidepoint(pos):
-                engine.draw_passes["Main"].blit(-9999999, self.deco_tiles.texture, pos, (4, 2), source_rect=self.deco_tiles[deco[2]])
+                engine.draw_passes["Main"].blit(-9999, self.deco_tiles.texture, pos, (4, 2), source_rect=self.deco_tiles[deco[2]])
         
         # Draw road
         ROAD_LINE_DISTANCE = 16
@@ -66,11 +67,11 @@ class CarScene(engine.Scene):
         ROAD_BLACK_COLOR = pygame.Color(79, 82, 117)
         ROAD_WHITE_COLOR = pygame.Color(230, 232, 250)
         ROAD_YELLOW_COLOR = pygame.Color(255, 218, 36)
-        engine.draw_passes["Main"].blit(-9999999, engine.DrawPass.get_pixel(ROAD_BLACK_COLOR, (self.ROAD_WIDTH, self.MAP_SIZE[1])), (0, 0))
-        engine.draw_passes["Main"].blit(-9999999, engine.DrawPass.get_pixel(ROAD_YELLOW_COLOR, (ROAD_MARGIN_LINE_WIDTH, self.MAP_SIZE[1])), (-self.ROAD_WIDTH / 2 + ROAD_MARGIN_LINE_PADDING, 0))
-        engine.draw_passes["Main"].blit(-9999999, engine.DrawPass.get_pixel(ROAD_YELLOW_COLOR, (ROAD_MARGIN_LINE_WIDTH, self.MAP_SIZE[1])), (self.ROAD_WIDTH / 2 - ROAD_MARGIN_LINE_PADDING, 0))
+        engine.draw_passes["Main"].blit(-9999, engine.DrawPass.get_pixel(ROAD_BLACK_COLOR, (self.ROAD_WIDTH, self.MAP_SIZE[1])), (0, 0))
+        engine.draw_passes["Main"].blit(-9999, engine.DrawPass.get_pixel(ROAD_YELLOW_COLOR, (ROAD_MARGIN_LINE_WIDTH, self.MAP_SIZE[1])), (-self.ROAD_WIDTH / 2 + ROAD_MARGIN_LINE_PADDING, 0))
+        engine.draw_passes["Main"].blit(-9999, engine.DrawPass.get_pixel(ROAD_YELLOW_COLOR, (ROAD_MARGIN_LINE_WIDTH, self.MAP_SIZE[1])), (self.ROAD_WIDTH / 2 - ROAD_MARGIN_LINE_PADDING, 0))
         # Draw road lines
         for y in range(-int(self.HALF_MAP_SIZE[1] - ROAD_LINE_LENGTH / 2), int(self.HALF_MAP_SIZE[1] + ROAD_LINE_LENGTH / 2), ROAD_LINE_DISTANCE + ROAD_LINE_LENGTH):
-            engine.draw_passes["Main"].blit(-9999999, engine.DrawPass.get_pixel(ROAD_WHITE_COLOR, (ROAD_LINE_WIDTH, ROAD_LINE_LENGTH)), (0, y))
+            engine.draw_passes["Main"].blit(-9999, engine.DrawPass.get_pixel(ROAD_WHITE_COLOR, (ROAD_LINE_WIDTH, ROAD_LINE_LENGTH)), (0, y))
         
         super().draw()

@@ -24,4 +24,5 @@ engine.run(
         
     },
     # True)
-    False, default_window_size=(800, 500))
+    # False, default_window_size=(800, 500))
+    False)

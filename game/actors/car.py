@@ -1,4 +1,5 @@
 import engine, pygame, engine.collider as colliders, engine.tweening.lerpfuncs as lerputil, engine.tweening.easingfuncs as easings
+from game.actors.decalmanager import DecalManager
 from math import pi, sin, cos, degrees
 
 
@@ -31,6 +32,8 @@ class Car(engine.Actor):
     
     def start(self):
         self.collider = colliders.CircleCollider(pygame.Vector2(0, 0), 4, "Car")
+        self.decal_manager_ref = engine.scene_manager.current_scene.get_actor(DecalManager)
+        self.skid_mark_sprite = pygame.image.load("game/sprites/Skid Marks.png")
     
     def update(self):
         pressed = engine.get_key
@@ -70,6 +73,12 @@ class Car(engine.Actor):
         # Loop logic
         if self.drift_energy > 0:
             self.drift_points.append(pygame.Vector2(self.collider.position))
+            self.decal_manager_ref.add_decal(
+                15,
+                self.skid_mark_sprite,
+                pygame.Vector2(self.collider.position),
+                rotation=degrees(self.direction + (pi / 2 * self.last_dir if self.drift_energy / self.MAX_DRIFT_ENERGY > 0.5 else 0))
+            )
             if len(self.drift_points) > 1:
                 # Check for completed loop
                 if Car.segment_intersects_polygon(self.drift_points[-2], self.drift_points[-1], self.drift_points[:-2]):
@@ -109,12 +118,12 @@ class Car(engine.Actor):
         )
         
         # Debug draw all drift points
-        for p in self.drift_points:
-            engine.draw_passes["Main"].blit(
-                99999,
-                engine.DrawPass.get_circle(pygame.Color("red"), 2),
-                p
-            )
+        # for p in zip(self.drift_points, self.drift_points):
+        #     engine.draw_passes["Main"].blit(
+        #         99999,
+        #         engine.DrawPass.get_pixel(pygame.Color(0, 0, 0, 64), (1, 8)),
+        #         p[0],
+        #     )
     
     
     
