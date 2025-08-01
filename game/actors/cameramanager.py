@@ -1,42 +1,46 @@
-import engine, pygame, engine.collider as colliders, engine.tweening.lerpfuncs as lerputil, engine.tweening.easingfuncs as easings
-from math import pi, sin, cos, degrees
-import random
+import engine
+import pygame
+import engine.tweening.lerpfuncs as lerp
+from engine.shake import BaseShake
+
 
 class CameraManager(engine.Actor):
     
     def __init__(self):
-        self.offset = pygame.Vector2(0, 0)
-        self.target_offset = pygame.Vector2(0, 0)
-        self.shake_duration = 0
-        self.shake_intensity = 0
+        self.shake_list : list[BaseShake] = []
+        self.offset = pygame.Vector2(0,0)
+        self.offset_target = pygame.Vector2(0,0)
         self.lerp_speed = 0.5
         super().__init__()
 
 
     def update(self):
-        if self.shake_duration > 0:
-            self.offset.x = random.randint(-self.shake_intensity, self.shake_intensity)
-            self.offset.y = random.randint(-self.shake_intensity, self.shake_intensity)
-            self.shake_duration -= engine.delta_time()
-        else:
-            self.offset = pygame.Vector2(0, 0)
-
-        self.offset = lerputil.vector2_lerp(self.offset, self.target_offset, self.lerp_speed)
-        
+        blended = pygame.Vector2(0,0)
+        for shake in self.shake_list:
+            blended += shake.update()
+        shake_list = [shake for shake in self.shake_list if not shake.is_done()]
+        # if shake_list:
+        #     blended /= len(shake_list)
+        self.offset_target = blended
 
         # Move camera to position
         # engine.draw_passes["Main"].camera.position = self.collider.position
         # Framerate-independent damping
-
+    
+        self.offset = lerp.vector2_lerp(self.offset, self.offset_target, self.lerp_speed)
+ 
         camera = engine.draw_passes["Main"].camera
-        target_pos = self.collider.position + self.offset
-        camera.position = lerputil.vector2_lerp(
+        camera.position = lerp.vector2_lerp(
             camera.position,
-            target_pos,
+            self.collider.position,
+            1 - 0.005 ** engine.delta_time()
+        )
+        camera.position = lerp.vector2_lerp(
+            camera.position,
+            self.offset,
             1 - 0.005 ** engine.delta_time()
         )
 
-    def start_shake(self,duration:float,intensity:float):
-        self.shake_duration = duration
-        self.shake_intensity = intensity
-
+    def add_shake(self, shake: BaseShake):
+        self.shake_list.append(shake)
+    

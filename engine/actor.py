@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 import engine.collider
 
-
 class Actor(ABC):
     @abstractmethod
     def __init__(self):

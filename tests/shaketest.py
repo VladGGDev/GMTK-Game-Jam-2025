@@ -1,5 +1,6 @@
 import engine,pygame
 from game.actors.cameramanager import CameraManager
+from engine.shake import SineShake,RandomShake
 
 class ShakeTest(engine.Scene):
     def __init__(self):
@@ -13,10 +14,10 @@ class ShakeTest(engine.Scene):
             engine.running = False
 
         if engine.get_key_down(pygame.K_SPACE):
-            self.CameraManager.start_shake(5,5)
+            self.CameraManager.add_shake(SineShake(5,5,10))
 
         if engine.get_key_down(pygame.K_c):
-            self.CameraManager.start_shake(1,100)
+            self.CameraManager.add_shake(RandomShake(5,5))
             
     
     def draw(self):

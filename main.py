@@ -15,7 +15,7 @@ engine.run(
             "Car" : game.scenes.carscene.CarScene(),
             "Camera Shake" : tests.shaketest.ShakeTest(),
         },
-        "Car"
+        "Camera Shake"
     ),
     {
         # "Main" : engine.DrawPass((320, 180), 0, None, (254, 231, 97, 255)),
