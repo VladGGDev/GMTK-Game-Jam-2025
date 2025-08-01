@@ -4,6 +4,7 @@ import game.scenes.carscene, tests.uitestscene, tests.circlecollisionsolvertests
 
 # Setup
 engine.unscaled_fixed_delta_time = 1 / 144
+engine.set_window_title("GMTK Loop")
 engine.run(
     engine.SceneManager(
         {
@@ -23,4 +24,4 @@ engine.run(
         
     },
     # True)
-    False)
+    False, default_window_size=(800, 500))

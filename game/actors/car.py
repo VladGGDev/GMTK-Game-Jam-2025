@@ -25,6 +25,9 @@ class Car(engine.Actor):
         self.speed = self.MIN_SPEED
         self.drift_energy = 0
         self.last_dir = 0
+        
+        # Loop data
+        self.drift_points = list[pygame.Vector2]()
     
     def start(self):
         self.collider = colliders.CircleCollider(pygame.Vector2(0, 0), 4, "Car")
@@ -64,6 +67,22 @@ class Car(engine.Actor):
             1 - 0.005**engine.delta_time())
     
     def fixed_update(self):
+        # Loop logic
+        if self.drift_energy > 0:
+            self.drift_points.append(pygame.Vector2(self.collider.position))
+            if len(self.drift_points) > 1:
+                # Check for completed loop
+                if Car.segment_intersects_polygon(self.drift_points[-2], self.drift_points[-1], self.drift_points[:-2]):
+                    # Kill enemies inside the loop
+                    # for enemy in engine.scene_manager.current_scene.get_actors(Enemy):
+                    #     if Car.point_inside_polygon(enemy.collider.position, self.drift_points):
+                    #         # Kill
+                    # Clear the polygon
+                    self.drift_points.clear()
+        else:
+            self.drift_points.clear()
+        
+        # Moving the collider
         move = self.speed * engine.fixed_delta_time()
         self.collider.position += pygame.Vector2(
             move * -sin(self.direction),
@@ -88,6 +107,50 @@ class Car(engine.Actor):
             (1, 1),
             direction
         )
+        
+        # Debug draw all drift points
+        for p in self.drift_points:
+            engine.draw_passes["Main"].blit(
+                99999,
+                engine.DrawPass.get_circle(pygame.Color("red"), 2),
+                p
+            )
+    
+    
+    
+    # Point-polygon intersections
+    @staticmethod
+    def point_inside_polygon(point: pygame.Vector2, polygon: list[pygame.Vector2]) -> bool:
+        point2 = point + pygame.Vector2(500, 0)
+        ctr_intersections = 0
+        num_vertices = len(polygon)
+        i = 0
+        while i < num_vertices - 1:
+            a, b = polygon[i], polygon[i + 1]
+            if Car.segments_intersect(point, point2, a, b):
+                ctr_intersections += 1
+                i += 1
+        return ctr_intersections % 2 == 1
+    
+    @staticmethod
+    def segment_intersects_polygon(a1: pygame.Vector2, a2: pygame.Vector2, polygon: list[pygame.Vector2]) -> bool:
+        num_vertices = len(polygon)
+        i = 0
+        while i < num_vertices - 1:
+            a, b = polygon[i], polygon[i + 1]
+            if Car.segments_intersect(a1, a2, a, b):
+                return True
+            i += 1
+        return False
+    
+    @staticmethod
+    def segments_intersect(a1: pygame.Vector2, a2: pygame.Vector2, b1: pygame.Vector2, b2: pygame.Vector2) -> bool:
+        # Thanks @Grumdrig and @i_4_got on stack overflow
+        def ccw(A,B,C):
+            return (C.y-A.y) * (B.x-A.x) > (B.y-A.y) * (C.x-A.x)
+        return ccw(a1,b1,b2) != ccw(a2,b1,b2) and ccw(a1,a2,b1) != ccw(a1,a2,b2)
+    
+    
     
     @staticmethod
     def create_shadow(source: pygame.Surface, alpha: int = 64) -> pygame.Surface:
