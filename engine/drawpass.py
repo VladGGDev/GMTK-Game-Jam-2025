@@ -51,10 +51,7 @@ class DrawPass:
         # How much bigger is the draw pass compared to the camera
         worldtocamsz = (self.surface.get_width() / self.camera.width, self.surface.get_height() / self.camera.height)
         # Scale multiplier applied to the source
-        if source_rect == None:
-            actualscale = (scale[0] * source.get_width(), scale[1] * source.get_height())
-        else:
-            actualscale = (scale[0] * source_rect.width, scale[1] * source_rect.height)
+        actualscale = (scale[0] * source.get_width(), scale[1] * source.get_height())
         
         
         # Size object relative to cam size
@@ -63,13 +60,14 @@ class DrawPass:
         # Also handle the source_rect
         if source_rect != None and rotation == 0:
             # Offset pivot relative to the source_rect
+            temp_sz = source.get_size()
             pivot = (source_rect.width / source.get_width() * pivot[0],
-                    source_rect.height /source.get_height() * pivot[1])
+                    source_rect.height / source.get_height() * pivot[1])
             # Account for texture resizing
-            source_rect.size = (int(source_rect.width * scale[0] / source.get_width()), 
-                                int(source_rect.height * scale[1] / source.get_height()))
-            source_rect.topleft = (int(source_rect.left * scale[0] / source.get_width()), 
-                                int(source_rect.top * scale[1] / source.get_height()))
+            source_rect = Rect(int(source_rect.left * scale[0] / source.get_width()), 
+                                int(source_rect.top * scale[1] / source.get_height()),
+                                int(source_rect.width * scale[0] / source.get_width()), 
+                                int(source_rect.height * scale[1] / source.get_height()),)
         
         # Offset the pivot of the object relative to the camera and center the camera on (0, 0)
         position = ((position[0] - campos[0] - actualscale[0] * pivot[0]) * worldtocamsz[0] + halfsurfsz[0],

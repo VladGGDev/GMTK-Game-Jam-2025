@@ -11,14 +11,14 @@ engine.run(
             # Tests
             "Coll solver": tests.circlecollisionsolvertestscene.CircleCollisionSolverTestScene(),
             "UI" : tests.uitestscene.UiTestScene(),
+            "Camera Shake" : tests.shaketest.ShakeTest(),
             
             "Car" : game.scenes.carscene.CarScene(),
-            "Camera Shake" : tests.shaketest.ShakeTest(),
         },
-        "Camera Shake"
+        "Car"
     ),
     {
-        "Main" : engine.DrawPass((480, 270), 0, None, (252, 221, 102)),
+        "Main" : engine.DrawPass((480, 270), 0, None, (252, 221, 102, 255)),
         "UI" : engine.DrawPass.create_ui((480, 270), 99)
         
     },

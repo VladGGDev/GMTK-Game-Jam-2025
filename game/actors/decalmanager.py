@@ -16,7 +16,7 @@ class DecalManager(engine.Actor):
         for d in self.__decals:
             if engine.draw_passes["Main"].camera.rect.collidepoint(d[2]):
                 engine.draw_passes["Main"].blit(
-                    -9990,
+                    -999,
                     d[1],
                     d[2],
                     d[3],
