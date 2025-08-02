@@ -18,8 +18,7 @@ engine.run(
         "Camera Shake"
     ),
     {
-        # "Main" : engine.DrawPass((320, 180), 0, None, (254, 231, 97, 255)),
-        "Main" : engine.DrawPass((480, 270), 0, None, (254, 231, 97, 255)),
+        "Main" : engine.DrawPass((480, 270), 0, None, (252, 221, 102)),
         "UI" : engine.DrawPass.create_ui((480, 270), 99)
         
     },
