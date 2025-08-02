@@ -105,6 +105,10 @@ scene_manager = SceneManager.empty()
 def set_window_title(title: str):
     pygame.display.set_caption(title)
 
+def quit():
+    global running
+    running = False
+
 
 def run(scene_manager_init: SceneManager | None = None,
         draw_passes_init: dict[str, DrawPass] | None = None,

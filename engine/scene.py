@@ -65,6 +65,7 @@ class Scene(Actor):
 class SceneManager(Actor):
     def __init__(self, scenes: dict[Any, Scene], start_scene: Any):
         self.scenes = scenes
+        self.skip_next_draw = False
         if start_scene not in scenes:
             raise ValueError("start_scene is not a key in the scenes dict")
         self.current_scene = scenes[start_scene]
@@ -80,6 +81,7 @@ class SceneManager(Actor):
         self.end()
         self.current_scene = self.scenes[new_scene_key]
         engine.collider.all_colliders.clear()
+        self.skip_next_draw = True
         self.start()
 
     def start(self):
@@ -95,4 +97,7 @@ class SceneManager(Actor):
         self.current_scene.end()
 
     def draw(self):
+        if self.skip_next_draw:
+            self.skip_next_draw = False
+            return
         self.current_scene.draw()

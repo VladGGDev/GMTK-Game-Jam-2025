@@ -47,11 +47,7 @@ class Text(UiElement):
         # Setting the rect
         sz = Text.render_surface(self).get_size()
         super().__init__(
-            pygame.Rect(
-                position[0] - sz[0] * 0.5, 
-                position[1] - sz[1] * 0.5,
-                sz[0],
-                sz[1]), 
+            pygame.Rect(position[0] - sz[0] * 0.5, position[1] - sz[1] * 0.5, sz[0], sz[1]), 
             draw_pass, order)
     
     def render_surface(self) -> pygame.Surface:
@@ -100,6 +96,7 @@ class Button(Text):
         self.on_deselected = on_deselected
         
         # Add padding to rect
+        self.padding = padding
         self.rect.inflate_ip(padding)
     
     def render_surface(self) -> pygame.Surface:
@@ -109,6 +106,10 @@ class Button(Text):
             return super().render_surface()
     
     def update(self):
+        # Rebuild the rect every frame
+        # sz = Text.render_surface(self).get_size()
+        # self.rect = pygame.Rect(self.position[0] - sz[0] * 0.5, self.position[1] - sz[1] * 0.5, sz[0], sz[1])
+        # self.rect.inflate_ip(self.padding)
         selected = self.mouse_in_rect()
         if selected and engine.get_mouse_buttons_down()[0]:
             self.on_clicked()
