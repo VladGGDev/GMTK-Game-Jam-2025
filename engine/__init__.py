@@ -49,11 +49,16 @@ def get_mouse_buttons_up() -> tuple[bool, bool, bool, bool, bool]:
             __mouse_buttons_last[3] and not get_mouse_buttons()[3],
             __mouse_buttons_last[4] and not get_mouse_buttons()[4])
 
-def get_mouse_pos() -> tuple[int, int]:
-    return pygame.mouse.get_pos()
+def get_mouse_pos(draw_pass_name: str) -> tuple[float, float]:
+    dp = draw_passes[draw_pass_name]
+    offset = __render_poss.get(dp, (0, 0))
+    sz = __scaled_renderers.get(dp, tuple(window.size))
+    pos = pygame.mouse.get_pos()
+    return ((pos[0] - offset[0]) / sz[0], (pos[1] - offset[1]) / sz[1])
 
-def set_mouse_pos(pos: tuple[int, int]):
-    pygame.mouse.set_pos(pos)
+# def set_mouse_pos(pos: tuple[float, float]):
+#     winsz = tuple(window.size)
+#     pygame.mouse.set_pos(pos[0] * winsz[0], pos[1] * winsz[1])
 
 def get_mouse_visible() -> bool:
     return pygame.mouse.get_visible()
@@ -86,6 +91,8 @@ def unscaled_total_time() -> float:
 # ////////////////////////
 can_render = True
 draw_passes = dict[str, DrawPass]()
+__scaled_renderers = dict[DrawPass, tuple[float, float]]()
+__render_poss = dict[DrawPass, tuple[float, float]]()
 
 
 
@@ -108,7 +115,7 @@ def run(scene_manager_init: SceneManager | None = None,
     global running, total_time, _keys_pressed, \
         __keys_pressed_last, __scroll_delta, unscaled_delta_time, \
         __mouse_buttons_last, can_render, scene_manager, \
-        draw_passes
+        draw_passes, __scaled_renders, __render_poss
     # Private
     next_fixed_timestep = 0
     clock = pygame.time.Clock()
@@ -179,15 +186,15 @@ def run(scene_manager_init: SceneManager | None = None,
                 
                 if window_size[0] < window_size[1] * dp_aspect_ratio:
                     # Horizontal black bars
-                    desired_scale = (window_size[0], window_size[0] / dp_aspect_ratio)
-                    render_pos = (0, (window_size[1] - desired_scale[1]) / 2)
+                    __scaled_renderers[draw_pass] = (window_size[0], window_size[0] / dp_aspect_ratio)
+                    __render_poss[draw_pass] = (0, (window_size[1] - __scaled_renderers[draw_pass][1]) / 2)
                 else:
                     # Vertical black bars
-                    desired_scale = (window_size[1] * dp_aspect_ratio, window_size[1])
-                    render_pos = ((window_size[0] - desired_scale[0]) / 2, 0)
+                    __scaled_renderers[draw_pass] = (window_size[1] * dp_aspect_ratio, window_size[1])
+                    __render_poss[draw_pass] = ((window_size[0] - __scaled_renderers[draw_pass][0]) / 2, 0)
                 
-                scaled = pygame.transform.scale(draw_pass.draw(), desired_scale)
-                screen.blit(scaled, render_pos) # Actually draw on screen
+                scaled = pygame.transform.scale(draw_pass.draw(), __scaled_renderers[draw_pass])
+                screen.blit(scaled, __render_poss[draw_pass]) # Actually draw on screen
             pygame.display.flip()
 
         clock.tick(1000)
