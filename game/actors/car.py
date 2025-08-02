@@ -116,7 +116,7 @@ class Car(engine.Actor):
         engine.draw_passes["Main"].blit(
             self.collider.position.y,
             self.shadow,
-            self.collider.position + pygame.Vector2(0, 2),
+            self.collider.position + pygame.Vector2(1, 1),
             (1, 1),
             direction
         )

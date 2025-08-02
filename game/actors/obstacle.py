@@ -12,8 +12,8 @@ class Obstacle(engine.Actor):
         self.position = position
         self.collider_radius = collider_radius
         self.texture = texture
-        # self.shadow = Obstacle.create_shadow((collider_radius * 3.5, collider_radius * 2.5))
-        self.shadow = pygame.transform.flip(car.Car.create_shadow(self.texture, 32), False, True)
+        self.shadow = Obstacle.create_circle_shadow((collider_radius * 4, collider_radius * 2))
+        # self.shadow = pygame.transform.flip(car.Car.create_shadow(self.texture, 32), False, True)
         self.pivot = pivot
         self.source_rect = source_rect
     
@@ -22,22 +22,22 @@ class Obstacle(engine.Actor):
     
     def draw(self):
         # Draw circle shadow
-        # engine.draw_passes["Main"].blit(
-        #     self.collider.position.y,
-        #     self.shadow,
-        #     self.collider.position + pygame.Vector2(0, 1))
-        # Draw realistic shadow
         engine.draw_passes["Main"].blit(
-            self.collider.position.y - 9999,
+            self.collider.position.y,
             self.shadow,
-            self.collider.position,
-            (1, 0.5),
-            0,
-            (0.5, 0),
-            self.source_rect)
+            self.collider.position + pygame.Vector2(0, 3))
+        # Draw realistic shadow
+        # engine.draw_passes["Main"].blit(
+        #     self.collider.position.y - 9999,
+        #     self.shadow,
+        #     self.collider.position,
+        #     (1, 0.5),
+        #     180,
+        #     (0.5, 0),
+        #     self.source_rect)
         # Draw self
         engine.draw_passes["Main"].blit(
-            self.collider.position.y - 9999,
+            self.collider.position.y,
             self.texture,
             self.collider.position,
             pivot=self.pivot,
