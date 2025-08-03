@@ -10,9 +10,11 @@ class MainMenuScene(engine.Scene):
     
     def start(self):
         middle_x = Text.get_position("UI", (0.5, 0))[0]
+        self.title_font = pygame.font.Font("game/fonts/DigitalDisco.ttf", 64)
+        self.button_font = pygame.font.Font("game/fonts/EnterCommand-Bold.ttf", 32)
         self.last_mouse_pos = engine.get_mouse_pos("UI")
         self.play_button =  SelectableButton((middle_x, 155),
-                   pygame.font.Font(None, 32),
+                   self.button_font,
                    "Play",
                    pygame.Color("black"),
                    None,
@@ -22,7 +24,7 @@ class MainMenuScene(engine.Scene):
                    padding=(10, 10))
         self.play_button.selected = True
         self.how_button = SelectableButton((middle_x, 195),
-                   pygame.font.Font(None, 32),
+                   self.button_font,
                    "How to play",
                    pygame.Color("black"),
                    None,
@@ -31,7 +33,7 @@ class MainMenuScene(engine.Scene):
                    lambda : print("How to play"),
                    padding=(10, 10))
         self.quit_button = SelectableButton((middle_x, 235),
-                   pygame.font.Font(None, 32),
+                   self.button_font,
                    "Quit",
                    pygame.Color("black"),
                    None,
@@ -42,7 +44,7 @@ class MainMenuScene(engine.Scene):
         
         self.actors.extend([
             Text((middle_x, 65),
-                pygame.font.Font(None, 72),
+                self.title_font,
                 "Game Title",
                 pygame.Color("black")),
                 

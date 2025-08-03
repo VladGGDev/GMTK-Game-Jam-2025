@@ -18,16 +18,17 @@ class PauseMenu(engine.Actor):
         self.tween = Tween((self.MIDDLE[0], -self.PANEL_SIZE[1] / 2), self.MIDDLE, 0.75, easingfuncs.ease_in_out_back, use_unscaled_time=True)
         self.tween.reverse()
         self.tween.restart_at(1)
+        self.font = pygame.font.Font("game/fonts/EnterCommand-Bold.ttf", 16)
         self.last_mouse_pos = engine.get_mouse_pos("UI")
         PANEL_OUTLINE = 1
         PANEL_BORDER_RADIUS = 8
         # UI setup
         self.question = Text((self.MIDDLE[0], -self.BUTTON_OFFSET[1]),
-                   pygame.font.Font(None, 16),
+                   self.font,
                    "Exit to title?",
                    pygame.Color("black"))
         self.yes_button = SelectableButton((self.MIDDLE[0] + self.BUTTON_OFFSET[1], self.MIDDLE[1] + self.BUTTON_OFFSET[1]),
-                   pygame.font.Font(None, 16),
+                   self.font,
                    "Yes",
                    pygame.Color("black"),
                    None,
@@ -36,7 +37,7 @@ class PauseMenu(engine.Actor):
                    lambda : engine.scene_manager.change_scene("Main Menu"),
                    padding=(10, 10))
         self.no_button = SelectableButton((self.MIDDLE[0] - self.BUTTON_OFFSET[1], self.MIDDLE[1] + self.BUTTON_OFFSET[1]),
-                   pygame.font.Font(None, 16),
+                   self.font,
                    "No",
                    pygame.Color("black"),
                    None,
