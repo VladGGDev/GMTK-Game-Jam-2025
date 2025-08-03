@@ -9,7 +9,6 @@ from game.actors.enemy import Enemy
 from engine.tweening import Tween, easingfuncs, lerpfuncs
 import pygame.mixer
 import random
-from engine.sound import pitch_shift
 from engine.lerputil import lerp
 from game.actors.cameramanager import CameraManager
 from engine.shake import SineShake
@@ -17,11 +16,7 @@ from engine.shake import SineShake
 
 class Explosion(engine.Actor):
     decal_tex = pygame.image.load("game/sprites/Explosion Decal.png")
-    pygame.mixer.init() 
-    base_sound = pygame.mixer.Sound("game/sounds/Car Explosion.wav")
-    base_array = pygame.sndarray.array(base_sound) 
-    MIN_PITCH = 1  
-    MAX_PITCH = 3   
+    freq_list = [44100,12345,67890]
 
     def __init__(self, position: pygame.Vector2):
         super().__init__()
@@ -31,10 +26,9 @@ class Explosion(engine.Actor):
         self.list_freq = [44100,22050,11025]
     
     def start(self):
-        pitch = random.uniform(self.MIN_PITCH,self.MAX_PITCH)
-        new_array = pitch_shift(self.base_array, pitch)
-        new_sound = pygame.sndarray.make_sound(new_array.copy())
-        pygame.mixer.Sound.play(new_sound)
+        pygame.mixer.init(frequency= self.freq_list[random.randint(0,len(self.freq_list)-1)]) 
+        base_sound = pygame.mixer.Sound("game/sounds/Car Explosion.wav")
+        base_sound.play(0)
         self.collider = engine.collider.CircleCollider(self.collider.position, 50, "Explosion")
 
         engine.scene_manager.current_scene.create_actor(GameEndMenu())

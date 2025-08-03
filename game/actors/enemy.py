@@ -7,14 +7,14 @@ import game.actors.car as car
 from game.actors.decalmanager import DecalManager
 from game.actors.cameramanager import CameraManager
 from engine.shake import RandomShake, SineShake
-
+import pygame.mixer
 
 class Enemy(engine.Actor):
     graphic = pygame.image.load("game/sprites/Zombie.png")
     big_blood_tex = SpriteSheet("game/sprites/Blood Big.png", (16, 16))
     MAX_SPEED = 36
     MIN_SPEED = 20
-    
+   
     def __init__(self, position: pygame.Vector2 | tuple[float, float], speed: float):
         self.speed = speed
         self.start_position = position
