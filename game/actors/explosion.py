@@ -5,6 +5,8 @@ from game.actors.gameendmenu import GameEndMenu
 from game.actors.pausemenu import PauseMenu
 from game.actors.scoremanager import ScoreManager
 from game.actors.enemy import Enemy
+from game.actors.cameramanager import CameraManager
+from engine.shake import SineShake
 
 
 class Explosion(engine.Actor):
@@ -20,6 +22,7 @@ class Explosion(engine.Actor):
         self.collider = engine.collider.CircleCollider(self.collider.position, 50, "Explosion")
         engine.scene_manager.current_scene.create_actor(GameEndMenu())
         engine.scene_manager.current_scene.get_actor(PauseMenu).can_open = False
+        engine.scene_manager.current_scene.get_actor(CameraManager).add_shake(SineShake(0.3, 3.5, 70))
         
         # Destroy more enemies
         hits = 0

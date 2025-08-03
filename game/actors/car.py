@@ -7,6 +7,8 @@ from game.actors.scoremanager import ScoreManager
 from game.actors.explosion import Explosion
 import game.scenes.carscene as carscene
 from game.actors.enemy import Enemy
+from game.actors.cameramanager import CameraManager
+from engine.shake import RandomShake, SineShake
 
 
 class Car(engine.Actor):
@@ -36,6 +38,7 @@ class Car(engine.Actor):
         self.last_dir = 0
         self.gfx_direction = self.direction
         self.lost = False
+        self.was_drifting = False
         
         # Loop data
         self.drift_points = list[pygame.Vector2]()
@@ -51,6 +54,7 @@ class Car(engine.Actor):
         self.decal_manager_ref = engine.scene_manager.current_scene.get_actor(DecalManager)
         self.skid_mark_sprite = pygame.image.load("game/sprites/Skid Marks.png")
         self.score_manager_ref = engine.scene_manager.current_scene.get_actor(ScoreManager)
+        self.camera_manager_ref = engine.scene_manager.current_scene.get_actor(CameraManager)
         engine.draw_passes["Main"].camera.position = (0, 0)
         
     
@@ -68,6 +72,13 @@ class Car(engine.Actor):
         self.drift_energy = max(self.drift_energy - engine.delta_time(), 0)
         if pressed(pygame.K_SPACE) and dir != 0:
             self.drift_energy = self.MAX_DRIFT_ENERGY
+        
+        if self.drift_energy > 0 and not self.was_drifting:
+            self.was_drifting = True
+            # self.camera_manager_ref.add_shake(RandomShake(0.2, 1.5))
+            self.camera_manager_ref.add_shake(SineShake(0.4, 1.25, 50))
+        if self.drift_energy <= 0:
+            self.was_drifting = False
         
         # Acceleration controls
         if pressed(pygame.K_w) or pressed(pygame.K_UP) or self.drift_energy > 0:

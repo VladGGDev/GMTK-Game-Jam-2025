@@ -5,6 +5,8 @@ import engine.collider as collider
 
 import game.actors.car as car
 from game.actors.decalmanager import DecalManager
+from game.actors.cameramanager import CameraManager
+from engine.shake import RandomShake, SineShake
 
 
 class Enemy(engine.Actor):
@@ -23,6 +25,7 @@ class Enemy(engine.Actor):
     def start(self):
         self.collider = collider.CircleCollider(pygame.Vector2(self.start_position), 4, "Enemy")
         self.car_ref = engine.scene_manager.current_scene.get_actor(car.Car)
+        self.camera_manager_ref = engine.scene_manager.current_scene.get_actor(CameraManager)
 
     def fixed_update(self):
         self.direction  = self.car_ref.collider.position - self.collider.position
@@ -47,6 +50,7 @@ class Enemy(engine.Actor):
         )
 
     def end(self):
+        self.camera_manager_ref.add_shake(SineShake(0.3, 1.5, 60))
         engine.scene_manager.current_scene.get_actor(DecalManager).add_decal(
             20,
             Enemy.big_blood_tex.texture,
