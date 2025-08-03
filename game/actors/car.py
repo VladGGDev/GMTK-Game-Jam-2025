@@ -64,6 +64,7 @@ class Car(engine.Actor):
         self.last_loop_alpha_tween.restart_at(1)
     
     def start(self):
+        Car.engine.unpause()
         # Other initializations
         self.collider = colliders.CircleCollider(pygame.Vector2(0, 0), 4, "Car")
         self.decal_manager_ref = engine.scene_manager.current_scene.get_actor(DecalManager)
@@ -125,6 +126,7 @@ class Car(engine.Actor):
             self.get_drift_additional_rotation(),
             1 - 0.0005**engine.delta_time())
         
+        result = self.engine_low_sound
         if self.speed > 150:
             result = self.engine_high_sound
         elif self.speed > 50:
@@ -132,8 +134,8 @@ class Car(engine.Actor):
         elif self.speed >= 0:
             result = self.engine_low_sound
         if result != pygame.mixer.Channel.get_sound(self.engine):
-            self.engine.set_volume(0.25)
-            self.engine.play(result,-1)
+            Car.engine.set_volume(0.25)
+            Car.engine.play(result,-1)
     
     def fixed_update(self):
         if self.lost:
@@ -226,6 +228,9 @@ class Car(engine.Actor):
                 engine.DrawPass.get_pixel(pygame.Color(255, 0, 0, int(self.last_loop_alpha_tween.result())), (2, 2)),
                 point
             )
+    
+    def end(self):
+        Car.engine.stop()
     
     
     def get_drift_additional_rotation(self) -> float:
