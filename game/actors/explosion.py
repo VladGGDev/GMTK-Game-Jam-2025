@@ -4,22 +4,14 @@ from engine.tweening import Tween, easingfuncs, lerpfuncs
 from game.actors.gameendmenu import GameEndMenu
 from game.actors.pausemenu import PauseMenu
 from game.actors.scoremanager import ScoreManager
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-from game.actors.enemy import Enemy
 
-=======
-=======
->>>>>>> Stashed changes
+from game.actors.enemy import Enemy
 from engine.tweening import Tween, easingfuncs, lerpfuncs
 import pygame.mixer
 import random
 from engine.sound import pitch_shift
 from engine.lerputil import lerp
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
 
 class Explosion(engine.Actor):
     decal_tex = pygame.image.load("game/sprites/Explosion Decal.png")
@@ -32,17 +24,17 @@ class Explosion(engine.Actor):
     def __init__(self, position: pygame.Vector2):
         super().__init__()
         self.collider.position = position
-        self.radius_tween = Tween(0, 32, 1.25, easingfuncs.ease_out_expo, lerpfuncs.lerp)
+        self.radius_tween = Tween(0, 40, 1.25, easingfuncs.ease_out_expo, lerpfuncs.lerp)
         self.alpha_tween = Tween(255, 0, 1.25, easingfuncs.ease_in_sine, lerpfuncs.lerp)
         self.list_freq = [44100,22050,11025]
     
     def start(self):
-
         pitch = random.uniform(self.MIN_PITCH,self.MAX_PITCH)
         new_array = pitch_shift(self.base_array, pitch)
         new_sound = pygame.sndarray.make_sound(new_array.copy())
         pygame.mixer.Sound.play(new_sound)
-        self.collider = engine.collider.CircleCollider(self.collider.position, 16, "Explosion")
+        self.collider = engine.collider.CircleCollider(self.collider.position, 50, "Explosion")
+
         engine.scene_manager.current_scene.create_actor(GameEndMenu())
         engine.scene_manager.current_scene.get_actor(PauseMenu).can_open = False
         

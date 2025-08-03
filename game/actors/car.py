@@ -6,18 +6,9 @@ from game.actors.decalmanager import DecalManager
 from game.actors.scoremanager import ScoreManager
 from game.actors.explosion import Explosion
 import game.scenes.carscene as carscene
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 from game.actors.enemy import Enemy
-
-=======
 from engine.sound import pitch_shift
 # from engine.lerputil import lerp
->>>>>>> Stashed changes
-=======
-from engine.sound import pitch_shift
-# from engine.lerputil import lerp
->>>>>>> Stashed changes
 
 class Car(engine.Actor):
 
@@ -31,14 +22,14 @@ class Car(engine.Actor):
     def __init__(self):
         super().__init__()
         # Constants
-        self.MAX_SPEED = 175
-        self.MAX_DRIFT_SPEED = 200
+        self.MAX_SPEED = 150
+        self.MAX_DRIFT_SPEED = 175
         self.MIN_SPEED = 0
         self.ACCELERATION = self.MAX_SPEED / 0.25
         self.DECELERATION = self.MAX_SPEED / 1
         self.FRICTION_DECELERATION = self.MAX_SPEED / 5
-        self.TURN_SPEED = 120 * pi / 180 # radians per second
-        self.DRIFT_TURN_SPEED = 270 * pi / 180 # radians per second
+        self.TURN_SPEED = 130 * pi / 180 # radians per second
+        self.DRIFT_TURN_SPEED = 250 * pi / 180 # radians per second
         self.MAX_DRIFT_ENERGY = 1 # Seconds of drift
         self.DRIFT_GFX_MIN_PERCENTAGE = 0.5
         self.DRIFT_GFX_DIRECTION = pi / 3
@@ -73,7 +64,7 @@ class Car(engine.Actor):
 
     def play_engine(self, speed, max_speed):
         t = max(0.0, min(1.0, speed / max_speed))
-        pitch = self.MIN_PITCH + (self.MAX_PITCH- self.MIN_PITCH) * t
+        pitch = self.MIN_PITCH + (self.MAX_PITCH - self.MIN_PITCH) ** t
         new_array = pitch_shift(self.base_array, pitch)
         new_sound = pygame.sndarray.make_sound(new_array.copy())
         new_sound.set_volume(0.8)

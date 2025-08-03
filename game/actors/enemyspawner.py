@@ -10,7 +10,7 @@ class EnemySpawner(engine.Actor):
     def __init__(self,
                 base_delay=2.0, 
                 base_cap=4, 
-                max_cap=500):
+                max_cap=50):
         self.base_delay = base_delay
         self.base_cap = base_cap
         self.max_cap = max_cap
@@ -24,8 +24,7 @@ class EnemySpawner(engine.Actor):
         return min(self.max_cap, int(sqrt(self.enemies_spawned_total + 1) * self.base_cap))
     
     def get_spawn_delay(self) -> float:
-        cap = self.get_current_cap()
-        return max(0.1, self.base_delay / cap) 
+        return max(0.1, self.base_delay) 
 
     def get_spawn_position_outside_camera(self):
         dist = engine.draw_passes["Main"].camera.width
@@ -42,6 +41,7 @@ class EnemySpawner(engine.Actor):
             spawn_pos = self.get_spawn_position_outside_camera()
             engine.scene_manager.current_scene.create_actor(Enemy(spawn_pos, random.uniform(Enemy.MIN_SPEED, Enemy.MAX_SPEED)))
             self.enemies_spawned_total += 1
+            self.base_delay -= 0.05
             self.timer = self.get_spawn_delay()
 
 
