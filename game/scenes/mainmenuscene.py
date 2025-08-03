@@ -9,6 +9,8 @@ class MainMenuScene(engine.Scene):
         self.NUM_BUTTONS = 3
         self.how_texture = pygame.image.load("game/sprites/Controls.png")
         self.show_controls = False
+        self.background = pygame.image.load("game/sprites/Menu Background.png")
+        self.background.set_alpha(195)
     
     def start(self):
         middle_x = Text.get_position("UI", (0.5, 0))[0]
@@ -90,6 +92,7 @@ class MainMenuScene(engine.Scene):
     def draw(self):
         if self.show_controls:
             engine.draw_passes["UI"].blit(1, self.how_texture, (0, 0), pivot=(0, 0))
+        engine.draw_passes["UI"].blit(-1, self.background, (0, 0), pivot=(0, 0))
         return super().draw()
     
     def toggle_show_controls(self, toggle: bool):
