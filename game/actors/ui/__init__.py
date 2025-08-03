@@ -114,7 +114,7 @@ class Button(Text):
         if selected and engine.get_mouse_buttons_down()[0]:
             self.on_clicked()
         if selected != self._was_selected:
-            self.on_selected() if selected else self.on_deselected
+            self.on_selected() if selected else self.on_deselected()
         self._was_selected = selected
     
     def draw(self):

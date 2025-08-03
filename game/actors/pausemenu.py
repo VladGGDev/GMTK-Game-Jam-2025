@@ -27,7 +27,7 @@ class PauseMenu(engine.Actor):
                    self.font,
                    "Exit to title?",
                    pygame.Color("black"))
-        self.yes_button = SelectableButton((self.MIDDLE[0] + self.BUTTON_OFFSET[1], self.MIDDLE[1] + self.BUTTON_OFFSET[1]),
+        self.yes_button = SelectableButton((self.MIDDLE[0] + self.BUTTON_OFFSET[0], self.MIDDLE[1] + self.BUTTON_OFFSET[1]),
                    self.font,
                    "Yes",
                    pygame.Color("black"),
@@ -36,7 +36,7 @@ class PauseMenu(engine.Actor):
                    pygame.Color((0, 0, 0, 64)),
                    lambda : engine.scene_manager.change_scene("Main Menu"),
                    padding=(10, 10))
-        self.no_button = SelectableButton((self.MIDDLE[0] - self.BUTTON_OFFSET[1], self.MIDDLE[1] + self.BUTTON_OFFSET[1]),
+        self.no_button = SelectableButton((self.MIDDLE[0] - self.BUTTON_OFFSET[0], self.MIDDLE[1] + self.BUTTON_OFFSET[1]),
                    self.font,
                    "No",
                    pygame.Color("black"),
