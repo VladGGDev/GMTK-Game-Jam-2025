@@ -4,6 +4,7 @@ from math import pi, sin, cos, degrees
 from game.actors.decalmanager import DecalManager
 from game.actors.scoremanager import ScoreManager
 from game.actors.explosion import Explosion
+import game.scenes.carscene as carscene
 
 
 class Car(engine.Actor):
@@ -72,12 +73,13 @@ class Car(engine.Actor):
         # Steering controls
         self.direction += dir * turn_sp * engine.delta_time() * (self.speed / max_sp)
         
-        # Move camera to position
-        # engine.draw_passes["Main"].camera.position = self.collider.position
+        # Clamp camera position to scene bounds
+        cam_max = pygame.Vector2(carscene.CarScene.HALF_MAP_SIZE) - pygame.Vector2(engine.draw_passes["Main"].camera.half_resolution)
+        clamped_position = self.v2_clamp(self.collider.position, cam_max)
         # Framerate-independent damping
         engine.draw_passes["Main"].camera.position = lerputil.vector2_lerp(
             pygame.Vector2(engine.draw_passes["Main"].camera.position),
-            self.collider.position,
+            clamped_position,
             1 - 0.005**engine.delta_time())
         
         # Smooth direction
@@ -130,6 +132,10 @@ class Car(engine.Actor):
                 self.lost = True
                 engine.scene_manager.current_scene.create_actor(Explosion(self.collider.position))
                 break
+        
+        # Clamp position to scene bounds
+        self.collider.position = self.v2_clamp(self.collider.position, pygame.Vector2(carscene.CarScene.HALF_MAP_SIZE))
+        
     
     def draw(self):
         if self.lost:
@@ -155,6 +161,10 @@ class Car(engine.Actor):
     
     def get_drift_additional_rotation(self) -> float:
         return self.DRIFT_GFX_DIRECTION * self.last_dir if self.drift_energy / self.MAX_DRIFT_ENERGY > self.DRIFT_GFX_MIN_PERCENTAGE else 0
+    
+    def v2_clamp(self, val: pygame.Vector2, max: pygame.Vector2):
+            clamp = pygame.math.clamp
+            return pygame.Vector2(clamp(val.x, -max.x, max.x), clamp(val.y, -max.y, max.y))
     
     
     
