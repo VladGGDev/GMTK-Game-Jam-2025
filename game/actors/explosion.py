@@ -1,5 +1,6 @@
 import engine, pygame, engine.collider
-from game.actors.decalmanager import DecalManager
+from game.actors.gameendmenu import GameEndMenu
+from game.actors.pausemenu import PauseMenu
 from game.actors.scoremanager import ScoreManager
 from engine.tweening import Tween, easingfuncs, lerpfuncs
 
@@ -15,6 +16,8 @@ class Explosion(engine.Actor):
     
     def start(self):
         self.collider = engine.collider.CircleCollider(self.collider.position, 16, "Explosion")
+        engine.scene_manager.current_scene.create_actor(GameEndMenu())
+        engine.scene_manager.current_scene.get_actor(PauseMenu).can_open = False
         # engine.scene_manager.current_scene.get_actor(DecalManager).add_decal(60, Explosion.decal_tex, self.collider.position)
         
         # Destroy more enemies

@@ -123,8 +123,8 @@ class Car(engine.Actor):
         
         # Changing values in score manager
         if self.drift_energy > 0:
-            self.score_manager_ref.drift_distance += move
-        self.score_manager_ref.total_distance += move
+            self.score_manager_ref.drift_distance += move / 8
+        self.score_manager_ref.total_distance += move / 8
         
         # Check for collision with anything
         for coll in colliders.all_colliders:

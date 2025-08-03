@@ -1,7 +1,6 @@
 import engine, pygame
 from game.actors.ui import Text, Button, SelectableButton
 from engine.tweening import Tween, easingfuncs
-from game.actors.car import Car
 
 
 class PauseMenu(engine.Actor):
@@ -13,6 +12,7 @@ class PauseMenu(engine.Actor):
         self.BUTTON_OFFSET = (25, 10)
     
     def start(self):
+        self.can_open = True
         self.open = False
         self.MIDDLE = Text.get_position("UI", (0.5, 0.5))
         self.tween = Tween((self.MIDDLE[0], -self.PANEL_SIZE[1] / 2), self.MIDDLE, 0.75, easingfuncs.ease_in_out_back, use_unscaled_time=True)
@@ -22,6 +22,7 @@ class PauseMenu(engine.Actor):
         self.last_mouse_pos = engine.get_mouse_pos("UI")
         PANEL_OUTLINE = 1
         PANEL_BORDER_RADIUS = 8
+        
         # UI setup
         self.question = Text((self.MIDDLE[0], -self.BUTTON_OFFSET[1]),
                    self.font,
@@ -52,6 +53,8 @@ class PauseMenu(engine.Actor):
         pygame.draw.rect(self.panel, pygame.Color(116, 63, 57), pygame.Rect((0, 0), self.PANEL_SIZE), PANEL_OUTLINE, PANEL_BORDER_RADIUS)
     
     def update(self):
+        if not self.can_open:
+            return
         res = self.tween.result()
         self.question.position = ((res[0], res[1] - self.BUTTON_OFFSET[1]))
         self.yes_button.position = (res[0] + self.BUTTON_OFFSET[0], res[1] + self.BUTTON_OFFSET[1])
@@ -82,6 +85,8 @@ class PauseMenu(engine.Actor):
         self.last_mouse_pos = engine.get_mouse_pos("UI")
     
     def draw(self):
+        if not self.can_open:
+            return
         engine.draw_passes["UI"].blit(0, self.panel, self.tween.result())
         self.question.draw()
         self.no_button.draw()
