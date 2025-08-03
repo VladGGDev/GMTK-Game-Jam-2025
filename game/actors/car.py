@@ -6,10 +6,23 @@ from game.actors.decalmanager import DecalManager
 from game.actors.scoremanager import ScoreManager
 from game.actors.explosion import Explosion
 import game.scenes.carscene as carscene
+<<<<<<< Updated upstream
 from game.actors.enemy import Enemy
 
+=======
+from engine.sound import pitch_shift
+# from engine.lerputil import lerp
+>>>>>>> Stashed changes
 
 class Car(engine.Actor):
+
+    pygame.mixer.init(frequency=44100, size=-16, channels=1)  
+    base_sound = pygame.mixer.Sound("game/sounds/Engine.wav")
+    base_array = pygame.sndarray.array(base_sound) 
+    MIN_PITCH = 0.7 
+    MAX_PITCH = 1.3  
+    engine_chan = pygame.mixer.Channel(3)
+
     def __init__(self):
         super().__init__()
         # Constants
@@ -52,7 +65,14 @@ class Car(engine.Actor):
         self.skid_mark_sprite = pygame.image.load("game/sprites/Skid Marks.png")
         self.score_manager_ref = engine.scene_manager.current_scene.get_actor(ScoreManager)
         engine.draw_passes["Main"].camera.position = (0, 0)
-        
+
+    def play_engine(self, speed, max_speed):
+        t = max(0.0, min(1.0, speed / max_speed))
+        pitch = self.MIN_PITCH + (self.MAX_PITCH- self.MIN_PITCH) * t
+        new_array = pitch_shift(self.base_array, pitch)
+        new_sound = pygame.sndarray.make_sound(new_array.copy())
+        new_sound.set_volume(0.8)
+        self.engine_chan.play(new_sound, loops=-1)    
     
     def update(self):
         if self.lost:
@@ -72,6 +92,7 @@ class Car(engine.Actor):
         # Acceleration controls
         if pressed(pygame.K_w) or pressed(pygame.K_UP) or self.drift_energy > 0:
             self.speed += self.ACCELERATION * engine.delta_time()
+            self.play_engine(self.speed,self.MAX_DRIFT_SPEED)
         elif pressed(pygame.K_s) or pressed(pygame.K_DOWN):
             self.speed -= self.DECELERATION * engine.delta_time()
         else:
