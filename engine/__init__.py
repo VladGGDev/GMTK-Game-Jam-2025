@@ -100,6 +100,7 @@ __render_poss = dict[DrawPass, tuple[float, float]]()
 # //// Initialization ////
 # ////////////////////////
 running = True
+__is_fullscreen = True
 
 def set_window_title(title: str):
     pygame.display.set_caption(title)
@@ -107,6 +108,17 @@ def set_window_title(title: str):
 def quit():
     global running
     running = False
+    
+def toggle_fullscreen():
+    global window, __is_fullscreen
+    if __is_fullscreen:
+        window.set_windowed()
+        window.resizable = True
+        window.maximize()
+        __is_fullscreen = False
+    else:
+        window.set_fullscreen(True)
+        __is_fullscreen = True
 
 
 def run(scene_manager_init: SceneManager,
@@ -128,6 +140,7 @@ def run(scene_manager_init: SceneManager,
     screen = pygame.display.set_mode(flags=pygame.SRCALPHA)
     window = Window.from_display_module()
     
+    __is_fullscreen = fullscreen
     if fullscreen:
         window.set_fullscreen(True)
     window.resizable = True
@@ -172,6 +185,10 @@ def run(scene_manager_init: SceneManager,
             next_fixed_timestep -= unscaled_fixed_delta_time
             scene_manager.fixed_update()
         scene_manager.update()
+        
+        # Hard code fullscreen toggle
+        if get_key_down(pygame.K_F11):
+            toggle_fullscreen()
 
         __mouse_buttons_last = pygame.mouse.get_pressed(num_buttons=5)
         

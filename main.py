@@ -25,6 +25,6 @@ engine.run(
         "Main" : engine.DrawPass((480, 270), 0, None, (252, 221, 102, 255)),
         "UI" : engine.DrawPass.create_ui((480, 270), 0, (0, 0, 0, 0))
     },
-    # True)
+    True)
     # False, default_window_size=(1000, 700))
-    False)
+    # False)
