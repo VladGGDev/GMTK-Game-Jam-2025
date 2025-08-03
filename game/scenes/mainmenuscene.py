@@ -3,6 +3,12 @@ from game.actors.ui import Text, Button, SelectableButton
 
 
 class MainMenuScene(engine.Scene):
+    ui_sound_channel = pygame.mixer.Channel(5)
+    ui_sound_channel.set_volume(0.25)
+    select_sound = pygame.mixer.Sound("game/sounds/UI Click.wav")
+    select_sound.set_volume(0.2)
+    click_sound = pygame.mixer.Sound("game/sounds/Button Press.wav")
+    
     def __init__(self):
         super().__init__([])
         self.selected_button = 0
@@ -17,6 +23,24 @@ class MainMenuScene(engine.Scene):
         self.title_font = pygame.font.Font("game/fonts/DigitalDisco.ttf", 48)
         self.button_font = pygame.font.Font("game/fonts/EnterCommand-Bold.ttf", 32)
         self.last_mouse_pos = engine.get_mouse_pos("UI")
+        
+        # Lambdas
+        def play_sound(i: int):
+            if i == 1:
+                MainMenuScene.select_sound.play()
+            else:
+                MainMenuScene.click_sound.play()
+        
+        def how_button_click():
+            self.toggle_show_controls(True)
+            play_sound(0)
+        
+        def how_button_deselect():
+            if self.show_controls:
+                play_sound(0)
+            self.toggle_show_controls(False)
+        
+            
         self.play_button =  SelectableButton((middle_x, 155),
                     self.button_font,
                     "Play",
@@ -25,8 +49,9 @@ class MainMenuScene(engine.Scene):
                     pygame.Color("black"),
                     pygame.Color((0, 0, 0, 64)),
                     lambda : engine.scene_manager.change_scene("Car"),
+                    lambda : play_sound(1),
                     padding=(10, 10))
-        self.play_button.selected = True
+        # self.play_button.selected = True
         self.how_button = SelectableButton((middle_x, 195),
                     self.button_font,
                     "How to play",
@@ -34,8 +59,9 @@ class MainMenuScene(engine.Scene):
                     None,
                     pygame.Color("black"),
                     pygame.Color((0, 0, 0, 64)),
-                    on_click=lambda : self.toggle_show_controls(True),
-                    on_deselected=lambda : self.toggle_show_controls(False),
+                    on_click=how_button_click,
+                    on_selected=lambda : play_sound(1),
+                    on_deselected=how_button_deselect,
                     padding=(10, 10))
         self.quit_button = SelectableButton((middle_x, 235),
                     self.button_font,
@@ -45,6 +71,7 @@ class MainMenuScene(engine.Scene):
                     pygame.Color("black"),
                     pygame.Color((0, 0, 0, 64)),
                     lambda : engine.quit(),
+                    lambda : play_sound(1),
                     padding=(10, 10))
         
         self.actors.extend([

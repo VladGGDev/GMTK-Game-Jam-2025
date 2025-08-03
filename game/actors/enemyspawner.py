@@ -7,7 +7,7 @@ import game.scenes.carscene as carscene
 
 class EnemySpawner(engine.Actor):
 
-    enemy_sound = pygame.mixer.Sound()
+    # enemy_sound = pygame.mixer.Sound()
     enemy_channel = pygame.mixer.Channel(6)
 
     def __init__(self,

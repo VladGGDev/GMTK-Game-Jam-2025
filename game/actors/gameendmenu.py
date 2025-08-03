@@ -7,6 +7,10 @@ from game.actors.scoremanager import ScoreManager
 class GameEndMenu(engine.Actor):
     def __init__(self):
         super().__init__()
+        self.ui_sound_channel = pygame.mixer.Channel(5)
+        self.ui_sound_channel.set_volume(0.25)
+        self.select_sound = pygame.mixer.Sound("game/sounds/UI Click.wav")
+        self.select_sound.set_volume(0.5)
         
         # Constants
         self.PANEL_SIZE = (150, 185)
@@ -26,6 +30,10 @@ class GameEndMenu(engine.Actor):
         PANEL_OUTLINE = 1
         PANEL_BORDER_RADIUS = 8
         self.ui_values = [0, 0, 0, 0]
+        
+        # Lambdas
+        def play_sound():
+            self.select_sound.play()
         
         # UI setup
         self.title = Text((self.MIDDLE[0], self.ELEMENT_START - 8),
@@ -56,6 +64,7 @@ class GameEndMenu(engine.Actor):
                    pygame.Color("black"),
                    pygame.Color((0, 0, 0, 64)),
                    lambda : engine.scene_manager.change_scene("Car"),
+                   play_sound,
                    padding=(10, 10))
         
         # Create back panel
