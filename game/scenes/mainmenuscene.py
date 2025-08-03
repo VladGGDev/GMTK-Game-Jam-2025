@@ -48,7 +48,7 @@ class MainMenuScene(engine.Scene):
         self.actors.extend([
             Text((middle_x, 65),
                 self.title_font,
-                "Game Title",
+                "Dune Drifter",
                 pygame.Color("black")),
                 
             self.play_button,

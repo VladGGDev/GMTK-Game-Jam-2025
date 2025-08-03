@@ -1,5 +1,6 @@
 import engine, pygame, engine.collider as colliders, engine.tweening.lerpfuncs as lerputil, engine.tweening.easingfuncs as easings
 from game.actors.decalmanager import DecalManager
+from game.actors.scoremanager import ScoreManager
 from math import pi, sin, cos, degrees
 import engine.tweening
 from engine.tweening import easingfuncs, lerpfuncs, Tween
@@ -40,6 +41,7 @@ class Car(engine.Actor):
         self.collider = colliders.CircleCollider(pygame.Vector2(0, 0), 4, "Car")
         self.decal_manager_ref = engine.scene_manager.current_scene.get_actor(DecalManager)
         self.skid_mark_sprite = pygame.image.load("game/sprites/Skid Marks.png")
+        self.score_manager_ref = engine.scene_manager.current_scene.get_actor(ScoreManager)
         
     
     def update(self):
@@ -94,10 +96,12 @@ class Car(engine.Actor):
             if len(self.drift_points) > 1:
                 # Check for completed loop
                 if Car.segment_intersects_polygon(self.drift_points[-2], self.drift_points[-1], self.drift_points[:-2]):
+                    self.score_manager_ref.total_loops += 1
                     # Kill enemies inside the loop
                     # for enemy in engine.scene_manager.current_scene.get_actors(Enemy):
                     #     if Car.point_inside_polygon(enemy.collider.position, self.drift_points):
                     #         # Kill
+                    #         # Add score
                     # Clear the polygon
                     self.drift_points.clear()
         else:
@@ -109,6 +113,11 @@ class Car(engine.Actor):
             move * -sin(self.direction),
             move * -cos(self.direction)
         )
+        
+        # Changing values in score manager
+        if self.drift_energy > 0:
+            self.score_manager_ref.drift_distance += move
+        self.score_manager_ref.total_distance += move
     
     def draw(self):
         direction = degrees(self.direction + self.gfx_direction)
