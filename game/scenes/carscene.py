@@ -34,7 +34,7 @@ class CarScene(engine.Scene):
             self.decorations.append((rand_pos[0], rand_pos[1], random.randrange(0, self.deco_tiles.get_num_cells())))
         
         # Initialize obstacle actors
-        OBSTACLE_COUNT = 25
+        OBSTACLE_COUNT = 15
         obstacle_sheet = SpriteSheet("game/sprites/Obstacles.png", (32, 32))
         obstacle_settings = [
             (2.5, (0.5, 0.9), 0),

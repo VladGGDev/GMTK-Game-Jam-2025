@@ -88,7 +88,7 @@ class Car(engine.Actor):
         if self.drift_energy > 0 and not self.was_drifting:
             self.was_drifting = True
             # self.camera_manager_ref.add_shake(RandomShake(0.2, 1.5))
-            self.camera_manager_ref.add_shake(SineShake(0.4, 1.25, 50))
+            self.camera_manager_ref.add_shake(SineShake(0.2, 1.25, 50))
         if self.drift_energy <= 0:
             self.was_drifting = False
         
@@ -173,8 +173,8 @@ class Car(engine.Actor):
         
         # Changing values in score manager
         if self.drift_energy > 0:
-            self.score_manager_ref.drift_distance += move / 8
-        self.score_manager_ref.total_distance += move / 8
+            self.score_manager_ref.drift_distance += move / 16
+        self.score_manager_ref.total_distance += move / 16
         
         # Check for collision with anything
         for coll in colliders.all_colliders:
