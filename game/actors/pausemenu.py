@@ -3,9 +3,14 @@ from game.actors.ui import Text, Button, SelectableButton
 from engine.tweening import Tween, easingfuncs
 
 
-class PauseMenu(engine.Actor):
+class PauseMenu(engine.Actor):    
     def __init__(self):
         super().__init__()
+        self.ui_sound_channel = pygame.mixer.Channel(5)
+        self.ui_sound_channel.set_volume(0.25)
+        self.select_sound = pygame.mixer.Sound("game/sounds/UI Click.wav")
+        self.select_sound.set_volume(0.5)
+        self.click_sound = pygame.mixer.Sound("game/sounds/Button Press.wav")
         
         # Constants
         self.PANEL_SIZE = (100, 60)
@@ -23,6 +28,11 @@ class PauseMenu(engine.Actor):
         PANEL_OUTLINE = 1
         PANEL_BORDER_RADIUS = 8
         
+        # Lambdas
+        def play_sound():
+            self.select_sound.play()
+            
+        
         # UI setup
         self.question = Text((self.MIDDLE[0], -self.BUTTON_OFFSET[1]),
                    self.font,
@@ -36,6 +46,7 @@ class PauseMenu(engine.Actor):
                    pygame.Color("black"),
                    pygame.Color((0, 0, 0, 64)),
                    lambda : engine.scene_manager.change_scene("Main Menu"),
+                   play_sound,
                    padding=(10, 10))
         self.no_button = SelectableButton((self.MIDDLE[0] - self.BUTTON_OFFSET[0], self.MIDDLE[1] + self.BUTTON_OFFSET[1]),
                    self.font,
@@ -45,6 +56,7 @@ class PauseMenu(engine.Actor):
                    pygame.Color("black"),
                    pygame.Color((0, 0, 0, 64)),
                    self.no_button_pressed,
+                   play_sound,
                    padding=(15, 10))
         
         # Create back panel
@@ -65,6 +77,7 @@ class PauseMenu(engine.Actor):
                 self.tween = Tween((self.MIDDLE[0], -self.PANEL_SIZE[1] / 2), self.MIDDLE, 0.75, easingfuncs.ease_in_out_back, use_unscaled_time=True)
                 self.tween.restart()
                 engine.time_scale = 0
+                pygame.mixer.pause()
             return
         else:
             if engine.get_key_down(pygame.K_ESCAPE):
@@ -96,3 +109,5 @@ class PauseMenu(engine.Actor):
         self.open = False
         self.tween = Tween(self.MIDDLE, (self.MIDDLE[0], -self.PANEL_SIZE[1] / 2), 0.75, easingfuncs.ease_in_out_back, use_unscaled_time=True)
         engine.time_scale = 1
+        pygame.mixer.unpause()
+        self.click_sound.play()
