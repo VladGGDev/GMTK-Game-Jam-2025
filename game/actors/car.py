@@ -132,8 +132,8 @@ class Car(engine.Actor):
         elif self.speed >= 0:
             result = self.engine_low_sound
         if result != pygame.mixer.Channel.get_sound(self.engine):
-            self.engine.set_volume(0.50)
-            self.engine.play(result)
+            self.engine.set_volume(0.25)
+            self.engine.play(result,-1)
     
     def fixed_update(self):
         if self.lost:

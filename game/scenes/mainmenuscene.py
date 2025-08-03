@@ -3,6 +3,9 @@ from game.actors.ui import Text, Button, SelectableButton
 
 
 class MainMenuScene(engine.Scene):
+    music = pygame.mixer.Sound("game/sounds/Music.mp3")
+    music.set_volume(0.10)
+    music.play(-1)
     def __init__(self):
         super().__init__([])
         self.selected_button = 0

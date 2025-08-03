@@ -7,11 +7,14 @@ import game.actors.car as car
 from game.actors.decalmanager import DecalManager
 from game.actors.cameramanager import CameraManager
 from engine.shake import RandomShake, SineShake
-import pygame.mixer
+
 
 class Enemy(engine.Actor):
     graphic = pygame.image.load("game/sprites/Zombie.png")
     big_blood_tex = SpriteSheet("game/sprites/Blood Big.png", (16, 16))
+    pygame.mixer.init()
+    zombie_sound_str = "game/sounds/Zombie "
+    zombie_sound_channel = pygame.mixer.Channel(7)
     MAX_SPEED = 36
     MIN_SPEED = 20
    
@@ -21,6 +24,7 @@ class Enemy(engine.Actor):
         self.shadow = car.Car.create_shadow(Enemy.graphic)
         self.direction = pygame.Vector2()
         self.rotation_offset = random.uniform(0, 180)
+        self.sound_played = False
 
     def start(self):
         self.collider = collider.CircleCollider(pygame.Vector2(self.start_position), 4, "Enemy")
@@ -30,7 +34,12 @@ class Enemy(engine.Actor):
     def fixed_update(self):
         self.direction  = self.car_ref.collider.position - self.collider.position
         self.collider.position += self.direction.normalize() * self.speed * engine.fixed_delta_time()
-        
+        if not self.sound_played and pygame.Vector2.distance_squared_to(self.car_ref.collider.position,self.collider.position) <=120:
+            self.sound_played = True
+            zombie_sound = pygame.mixer.Sound(self.zombie_sound_str + str(random.randint(1,5)) + ".wav")
+            self.zombie_sound_channel.play(zombie_sound)
+            
+
     def draw(self):
         rotation = math.sin((engine.total_time + self.rotation_offset) * \
                             remap(self.speed, Enemy.MIN_SPEED, Enemy.MAX_SPEED, 0.75, 7.5)) * 15
