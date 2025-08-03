@@ -13,14 +13,14 @@ class Car(engine.Actor):
     def __init__(self):
         super().__init__()
         # Constants
-        self.MAX_SPEED = 175
-        self.MAX_DRIFT_SPEED = 200
+        self.MAX_SPEED = 150
+        self.MAX_DRIFT_SPEED = 175
         self.MIN_SPEED = 0
         self.ACCELERATION = self.MAX_SPEED / 0.25
         self.DECELERATION = self.MAX_SPEED / 1
         self.FRICTION_DECELERATION = self.MAX_SPEED / 5
-        self.TURN_SPEED = 120 * pi / 180 # radians per second
-        self.DRIFT_TURN_SPEED = 270 * pi / 180 # radians per second
+        self.TURN_SPEED = 130 * pi / 180 # radians per second
+        self.DRIFT_TURN_SPEED = 250 * pi / 180 # radians per second
         self.MAX_DRIFT_ENERGY = 1 # Seconds of drift
         self.DRIFT_GFX_MIN_PERCENTAGE = 0.5
         self.DRIFT_GFX_DIRECTION = pi / 3

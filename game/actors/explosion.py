@@ -13,11 +13,11 @@ class Explosion(engine.Actor):
     def __init__(self, position: pygame.Vector2):
         super().__init__()
         self.collider.position = position
-        self.radius_tween = Tween(0, 32, 1.25, easingfuncs.ease_out_expo, lerpfuncs.lerp)
+        self.radius_tween = Tween(0, 40, 1.25, easingfuncs.ease_out_expo, lerpfuncs.lerp)
         self.alpha_tween = Tween(255, 0, 1.25, easingfuncs.ease_in_sine, lerpfuncs.lerp)
     
     def start(self):
-        self.collider = engine.collider.CircleCollider(self.collider.position, 16, "Explosion")
+        self.collider = engine.collider.CircleCollider(self.collider.position, 50, "Explosion")
         engine.scene_manager.current_scene.create_actor(GameEndMenu())
         engine.scene_manager.current_scene.get_actor(PauseMenu).can_open = False
         
