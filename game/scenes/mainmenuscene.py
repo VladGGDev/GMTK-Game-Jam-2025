@@ -22,6 +22,7 @@ class MainMenuScene(engine.Scene):
         self.background.set_alpha(195)
     
     def start(self):
+        pygame.mixer.unpause()
         middle_x = Text.get_position("UI", (0.5, 0))[0]
         self.title_font = pygame.font.Font("game/fonts/DigitalDisco.ttf", 48)
         self.button_font = pygame.font.Font("game/fonts/EnterCommand-Bold.ttf", 32)
