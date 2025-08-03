@@ -16,7 +16,6 @@ from engine.shake import SineShake
 
 class Explosion(engine.Actor):
     decal_tex = pygame.image.load("game/sprites/Explosion Decal.png")
-    freq_list = [44100,12345,67890]
 
     def __init__(self, position: pygame.Vector2):
         super().__init__()
@@ -26,9 +25,9 @@ class Explosion(engine.Actor):
         self.list_freq = [44100,22050,11025]
     
     def start(self):
-        pygame.mixer.init(frequency= self.freq_list[random.randint(0,len(self.freq_list)-1)]) 
         base_sound = pygame.mixer.Sound("game/sounds/Car Explosion.wav")
-        base_sound.play(0)
+        base_sound.set_volume(0.25)
+        base_sound.play()
         self.collider = engine.collider.CircleCollider(self.collider.position, 50, "Explosion")
 
         engine.scene_manager.current_scene.create_actor(GameEndMenu())

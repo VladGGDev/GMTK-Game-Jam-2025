@@ -148,16 +148,12 @@ class Car(engine.Actor):
                         if Car.point_inside_polygon(enemy.collider.position, self.drift_points):
                             engine.scene_manager.current_scene.destroy_actor(enemy)
                             hits += 1
-                        if hits > 3:
-                            self.death_channel.set_volume(1.5)
-                            self.death_channel.play(self.death_sound,1,5)
-                            self.blood_splatter_channel.set_volume(1.35)
-                            self.blood_splatter_channel.play(self.blood_splatter_sound,1,5)
-                        else:
-                            self.death_channel.set_volume(0.75)
-                            self.death_channel.play(self.death_sound,1,5)
-                            self.blood_splatter_channel.set_volume(0.70)
-                            self.blood_splatter_channel.play(self.blood_splatter_sound,1,5)
+                        if hits > 0:
+                            self.death_channel.set_volume(1.25)
+                            self.death_channel.play(self.death_sound)
+                        if hits > 1:
+                            self.blood_splatter_channel.set_volume(1.05)
+                            self.blood_splatter_channel.play(self.blood_splatter_sound)
                     self.score_manager_ref.score += hits
                     # Clear the polygon
                     self.drift_points.clear()
