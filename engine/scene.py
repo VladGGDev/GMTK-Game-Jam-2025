@@ -63,27 +63,25 @@ class Scene(Actor):
 
 
 class SceneManager(Actor):
-    def __init__(self, scenes: dict[Any, Scene], start_scene: Any):
+    def __init__(self, scenes: dict[Any, tuple[type[Scene], tuple[Any, ...]]], start_scene: Any):
         self.scenes = scenes
         self.skip_next_draw = False
         if start_scene not in scenes:
             raise ValueError("start_scene is not a key in the scenes dict")
-        self.current_scene = scenes[start_scene]
+        self.current_scene = self._create_scene(start_scene)
         engine.collider.all_colliders.clear()
-    
-    @classmethod
-    def empty(cls) -> "SceneManager":
-        return cls({None : Scene()}, None)
 
+    # Current scene manipulation
     def change_scene(self, new_scene_key: Any):
         if new_scene_key not in self.scenes:
             raise ValueError("new_scene_key is not a key in the scenes dict")
         self.end()
-        self.current_scene = self.scenes[new_scene_key]
+        self.current_scene = self._create_scene(new_scene_key)
         engine.collider.all_colliders.clear()
         self.skip_next_draw = True
         self.start()
 
+    # Engine related functions
     def start(self):
         self.current_scene.start()
 
@@ -101,3 +99,18 @@ class SceneManager(Actor):
             self.skip_next_draw = False
             return
         self.current_scene.draw()
+    
+    # Scene dict functions
+    def _create_scene(self, key: Any) -> Scene:
+        if key not in self.scenes:
+            raise ValueError("new_scene_key is not a key in the scenes dict")
+        scene_t = self.scenes[key][0]
+        return scene_t(*self.scenes[key][1])
+    
+    def add_scene(self, key: Any, scene_type: type[Scene], *params: Any):
+        self.scenes[key] = (scene_type, *params)
+    
+    def delete_scene(self, key: Any):
+        if key not in self.scenes:
+            raise ValueError("new_scene_key is not a key in the scenes dict")
+        self.scenes.pop(key)

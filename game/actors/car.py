@@ -44,6 +44,7 @@ class Car(engine.Actor):
         self.decal_manager_ref = engine.scene_manager.current_scene.get_actor(DecalManager)
         self.skid_mark_sprite = pygame.image.load("game/sprites/Skid Marks.png")
         self.score_manager_ref = engine.scene_manager.current_scene.get_actor(ScoreManager)
+        engine.draw_passes["Main"].camera.position = (0, 0)
         
     
     def update(self):
