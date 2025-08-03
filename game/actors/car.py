@@ -7,8 +7,13 @@ from game.actors.scoremanager import ScoreManager
 from game.actors.explosion import Explosion
 import game.scenes.carscene as carscene
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 from game.actors.enemy import Enemy
 
+=======
+from engine.sound import pitch_shift
+# from engine.lerputil import lerp
+>>>>>>> Stashed changes
 =======
 from engine.sound import pitch_shift
 # from engine.lerputil import lerp

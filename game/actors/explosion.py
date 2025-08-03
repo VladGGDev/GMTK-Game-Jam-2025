@@ -5,14 +5,20 @@ from game.actors.gameendmenu import GameEndMenu
 from game.actors.pausemenu import PauseMenu
 from game.actors.scoremanager import ScoreManager
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 from game.actors.enemy import Enemy
 
 =======
+=======
+>>>>>>> Stashed changes
 from engine.tweening import Tween, easingfuncs, lerpfuncs
 import pygame.mixer
 import random
 from engine.sound import pitch_shift
 from engine.lerputil import lerp
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 class Explosion(engine.Actor):
