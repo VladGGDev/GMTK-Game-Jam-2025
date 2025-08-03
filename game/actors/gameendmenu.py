@@ -13,7 +13,7 @@ class GameEndMenu(engine.Actor):
         self.ELEMENT_DISTANCE = 25
         self.ELEMENT_START = -self.PANEL_SIZE[1] / 2 + 32
         
-        self.ADD_DELAY = 0.1
+        self.ADD_DELAY = 0.0
         self.add_delay = self.ADD_DELAY
     
     def start(self):
@@ -106,7 +106,7 @@ class GameEndMenu(engine.Actor):
         if current >= target:
             return 0
         p10 = 0
-        while current + 10**p10 < target:
+        while current + 10**(p10 + 1) < target:
             p10 += 1
         p10 -= 1
         return 10**p10

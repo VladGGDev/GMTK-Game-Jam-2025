@@ -14,7 +14,7 @@ class MainMenuScene(engine.Scene):
     
     def start(self):
         middle_x = Text.get_position("UI", (0.5, 0))[0]
-        self.title_font = pygame.font.Font("game/fonts/DigitalDisco.ttf", 64)
+        self.title_font = pygame.font.Font("game/fonts/DigitalDisco.ttf", 48)
         self.button_font = pygame.font.Font("game/fonts/EnterCommand-Bold.ttf", 32)
         self.last_mouse_pos = engine.get_mouse_pos("UI")
         self.play_button =  SelectableButton((middle_x, 155),
@@ -48,7 +48,7 @@ class MainMenuScene(engine.Scene):
                     padding=(10, 10))
         
         self.actors.extend([
-            Text((middle_x, 65),
+            Text((middle_x, 60),
                 self.title_font,
                 "Dune Drifter",
                 pygame.Color("black")),
