@@ -1,10 +1,12 @@
 import engine, pygame, engine.collider as colliders, engine.tweening.lerpfuncs as lerputil, engine.tweening.easingfuncs as easings
 from math import pi, sin, cos, degrees
+from engine.tweening import Tween
 
 from game.actors.decalmanager import DecalManager
 from game.actors.scoremanager import ScoreManager
 from game.actors.explosion import Explosion
 import game.scenes.carscene as carscene
+from game.actors.enemy import Enemy
 
 
 class Car(engine.Actor):
@@ -37,6 +39,11 @@ class Car(engine.Actor):
         
         # Loop data
         self.drift_points = list[pygame.Vector2]()
+        
+        # Last loop data
+        self.debug_last_drift_points = list[pygame.Vector2]()
+        self.last_loop_alpha_tween = Tween(255, 0, 1, lerpfunc=lerputil.lerp)
+        self.last_loop_alpha_tween.restart_at(1)
     
     def start(self):
         # Other initializations
@@ -103,13 +110,22 @@ class Car(engine.Actor):
             )
             if len(self.drift_points) > 1:
                 # Check for completed loop
-                if Car.segment_intersects_polygon(self.drift_points[-2], self.drift_points[-1], self.drift_points[:-2]):
+                intersects = Car.segment_intersects_polygon(self.drift_points[-2], self.drift_points[-1], self.drift_points[:-50])
+                if intersects != None:
+                    # Remove the trailing segments which are not part of the polygon
+                    self.drift_points = self.drift_points[intersects[0]:]
+                    self.last_loop_alpha_tween.restart()
+                    self.debug_last_drift_points = self.drift_points[:]
+                    
                     self.score_manager_ref.total_loops += 1
                     # Kill enemies inside the loop
-                    # for enemy in engine.scene_manager.current_scene.get_actors(Enemy):
-                    #     if Car.point_inside_polygon(enemy.collider.position, self.drift_points):
-                    #         # Kill
-                    #         # Add score
+                    hits = 0
+                    enemies = engine.scene_manager.current_scene.get_actors(Enemy)
+                    for enemy in enemies:
+                        if Car.point_inside_polygon(enemy.collider.position, self.drift_points):
+                            engine.scene_manager.current_scene.destroy_actor(enemy)
+                            hits += 1
+                    self.score_manager_ref.score += hits
                     # Clear the polygon
                     self.drift_points.clear()
         else:
@@ -158,6 +174,13 @@ class Car(engine.Actor):
             (1, 1),
             direction
         )
+        # Debug draw drift points
+        for point in self.debug_last_drift_points:
+            engine.draw_passes["Main"].blit(
+                99,
+                engine.DrawPass.get_pixel(pygame.Color(255, 0, 0, int(self.last_loop_alpha_tween.result())), (2, 2)),
+                point
+            )
     
     
     def get_drift_additional_rotation(self) -> float:
@@ -173,6 +196,7 @@ class Car(engine.Actor):
     @staticmethod
     def point_inside_polygon(point: pygame.Vector2, polygon: list[pygame.Vector2]) -> bool:
         point2 = point + pygame.Vector2(500, 0)
+        point3 = point + pygame.Vector2(-500, 0)
         ctr_intersections = 0
         num_vertices = len(polygon)
         i = 0
@@ -180,19 +204,19 @@ class Car(engine.Actor):
             a, b = polygon[i], polygon[i + 1]
             if Car.segments_intersect(point, point2, a, b):
                 ctr_intersections += 1
-                i += 1
+            i += 1
         return ctr_intersections % 2 == 1
     
     @staticmethod
-    def segment_intersects_polygon(a1: pygame.Vector2, a2: pygame.Vector2, polygon: list[pygame.Vector2]) -> bool:
+    def segment_intersects_polygon(a1: pygame.Vector2, a2: pygame.Vector2, polygon: list[pygame.Vector2]) -> tuple[int, int] | None:
         num_vertices = len(polygon)
         i = 0
         while i < num_vertices - 1:
             a, b = polygon[i], polygon[i + 1]
             if Car.segments_intersect(a1, a2, a, b):
-                return True
+                return (i, i + 1)
             i += 1
-        return False
+        return None
     
     @staticmethod
     def segments_intersect(a1: pygame.Vector2, a2: pygame.Vector2, b1: pygame.Vector2, b2: pygame.Vector2) -> bool:

@@ -14,11 +14,11 @@ class Scene(Actor):
             actor.start()
 
     def update(self):
-        for actor in self.actors:
+        for actor in self.actors[:]:
             actor.update()
 
     def fixed_update(self):
-        for actor in self.actors:
+        for actor in self.actors[:]:
             actor.fixed_update()
 
     def end(self):
@@ -59,6 +59,7 @@ class Scene(Actor):
         engine.collider.all_colliders.remove(actor.collider)
         self.actors.remove(actor)
         actor.end()
+        
         
 
 

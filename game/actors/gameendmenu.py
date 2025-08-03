@@ -21,8 +21,7 @@ class GameEndMenu(engine.Actor):
         self.MIDDLE = Text.get_position("UI", (0.5, 0.5))
         self.pos_tween = TweenSequence()\
             .start_delay(1, (self.MIDDLE[0], -self.PANEL_SIZE[1] / 2))\
-            .add(Tween((self.MIDDLE[0], -self.PANEL_SIZE[1] / 2), self.MIDDLE, 0.75, easingfuncs.ease_in_out_back))\
-            .delay(1)
+            .add(Tween((self.MIDDLE[0], -self.PANEL_SIZE[1] / 2), self.MIDDLE, 0.75, easingfuncs.ease_in_out_back))
         self.text_font = pygame.font.Font("game/fonts/EnterCommand.ttf", 16)
         PANEL_OUTLINE = 1
         PANEL_BORDER_RADIUS = 8
@@ -51,12 +50,12 @@ class GameEndMenu(engine.Actor):
                    pygame.Color("black"))
         self.continue_button = Button((self.MIDDLE[0], self.MIDDLE[1] + self.ELEMENT_START + self.ELEMENT_DISTANCE * 5.5),
                    pygame.font.Font("game/fonts/EnterCommand-Bold.ttf", 16),
-                   "Continue",
+                   "Retry",
                    pygame.Color("black"),
                    None,
                    pygame.Color("black"),
                    pygame.Color((0, 0, 0, 64)),
-                   lambda : engine.scene_manager.change_scene("Main Menu"),
+                   lambda : engine.scene_manager.change_scene("Car"),
                    padding=(10, 10))
         
         # Create back panel
@@ -78,10 +77,14 @@ class GameEndMenu(engine.Actor):
             self.add_delay -= engine.delta_time()
             if self.add_delay <= 0:
                 self.add_delay = self.ADD_DELAY
-                self.ui_values[0] += self.what_to_add(self.ui_values[0], self.score_manager_ref.score)
-                self.ui_values[1] += self.what_to_add(self.ui_values[1], int(self.score_manager_ref.total_distance))
-                self.ui_values[2] += self.what_to_add(self.ui_values[2], int(self.score_manager_ref.drift_distance))
-                self.ui_values[3] += self.what_to_add(self.ui_values[3], self.score_manager_ref.total_loops)
+                def increment():
+                    self.ui_values[0] += self.what_to_add(self.ui_values[0], self.score_manager_ref.score)
+                    self.ui_values[1] += self.what_to_add(self.ui_values[1], int(self.score_manager_ref.total_distance))
+                    self.ui_values[2] += self.what_to_add(self.ui_values[2], int(self.score_manager_ref.drift_distance))
+                    self.ui_values[3] += self.what_to_add(self.ui_values[3], self.score_manager_ref.total_loops)
+                increment()
+                increment()
+                increment()
                 self.score.text = f"Score: {self.ui_values[0]:.0f}"
                 self.distance.text = f"Distance driven: {self.ui_values[1]:.0f}m"
                 self.drift.text = f"Distance drifted: {self.ui_values[2]:.0f}m"
