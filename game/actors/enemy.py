@@ -50,7 +50,7 @@ class Enemy(engine.Actor):
         )
 
     def end(self):
-        self.camera_manager_ref.add_shake(SineShake(0.3, 1.5, 60))
+        self.camera_manager_ref.add_shake(SineShake(0.35, 2, 60))
         engine.scene_manager.current_scene.get_actor(DecalManager).add_decal(
             20,
             Enemy.big_blood_tex.texture,

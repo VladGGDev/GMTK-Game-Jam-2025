@@ -8,8 +8,8 @@ import game.scenes.carscene as carscene
 class EnemySpawner(engine.Actor):
 
     def __init__(self,
-                base_delay=2.0, 
-                base_cap=4, 
+                base_delay=3.0, 
+                base_cap=2, 
                 max_cap=50):
         self.base_delay = base_delay
         self.base_cap = base_cap
@@ -41,7 +41,7 @@ class EnemySpawner(engine.Actor):
             spawn_pos = self.get_spawn_position()
             engine.scene_manager.current_scene.create_actor(Enemy(spawn_pos, random.uniform(Enemy.MIN_SPEED, Enemy.MAX_SPEED)))
             self.enemies_spawned_total += 1
-            self.base_delay -= 0.05
+            self.base_delay -= 0.025
             self.timer = self.get_spawn_delay()
 
 

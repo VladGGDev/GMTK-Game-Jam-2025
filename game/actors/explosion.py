@@ -33,7 +33,7 @@ class Explosion(engine.Actor):
         engine.scene_manager.current_scene.get_actor(ScoreManager).score += hits
     
     def draw(self):
-        engine.draw_passes["Main"].blit(-9990, Explosion.decal_tex, self.collider.position)
+        engine.draw_passes["Main"].blit(-9990, Explosion.decal_tex, self.collider.position, (1.25, 1.25))
         engine.draw_passes["Main"].blit(
             -9989,
             engine.DrawPass.get_circle(pygame.Color(255, 255, 255, int(self.alpha_tween.result())), self.radius_tween.result()), 
