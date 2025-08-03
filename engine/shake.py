@@ -24,15 +24,15 @@ class RandomShake(BaseShake):
         if self.remaining <= 0:
             return pygame.Vector2(0,0)
         self.remaining -= engine.delta_time()
-        return pygame.Vector2(random.randint(-self.intensity,self.intensity),
-                              random.randint(-self.intensity,self.intensity)
+        return pygame.Vector2(random.uniform(-self.intensity,self.intensity),
+                              random.uniform(-self.intensity,self.intensity)
                               )
     
     def is_done(self) -> bool:
         return self.remaining <= 0
 
 class SineShake(BaseShake):
-    def __init__(self, duration:float, intensity:float,freq:float) -> None:
+    def __init__(self, duration:float, intensity:float, freq:float) -> None:
         self.offset = pygame.Vector2(0,0)
         self.duration = duration
         self.remaining = duration

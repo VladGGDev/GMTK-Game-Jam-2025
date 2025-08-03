@@ -26,7 +26,7 @@ class EnemySpawner(engine.Actor):
     def get_spawn_delay(self) -> float:
         return max(0.1, self.base_delay) 
 
-    def get_spawn_position_outside_camera(self):
+    def get_spawn_position(self):
         dist = engine.draw_passes["Main"].camera.width
         dir = random.uniform(0, pi * 2)
         return(dist * -sin(dir), dist * -cos(dir))
@@ -38,7 +38,7 @@ class EnemySpawner(engine.Actor):
         self.timer -= engine.delta_time()
         current_cap = self.get_current_cap()
         if self.timer <= 0 and self.get_num_zombies() < current_cap:
-            spawn_pos = self.get_spawn_position_outside_camera()
+            spawn_pos = self.get_spawn_position()
             engine.scene_manager.current_scene.create_actor(Enemy(spawn_pos, random.uniform(Enemy.MIN_SPEED, Enemy.MAX_SPEED)))
             self.enemies_spawned_total += 1
             self.base_delay -= 0.05

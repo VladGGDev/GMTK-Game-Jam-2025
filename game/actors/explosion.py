@@ -11,6 +11,8 @@ import pygame.mixer
 import random
 from engine.sound import pitch_shift
 from engine.lerputil import lerp
+from game.actors.cameramanager import CameraManager
+from engine.shake import SineShake
 
 
 class Explosion(engine.Actor):
@@ -37,6 +39,7 @@ class Explosion(engine.Actor):
 
         engine.scene_manager.current_scene.create_actor(GameEndMenu())
         engine.scene_manager.current_scene.get_actor(PauseMenu).can_open = False
+        engine.scene_manager.current_scene.get_actor(CameraManager).add_shake(SineShake(0.3, 3.5, 70))
         
         # Destroy more enemies
         hits = 0

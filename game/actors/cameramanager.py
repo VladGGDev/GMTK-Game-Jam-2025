@@ -29,17 +29,7 @@ class CameraManager(engine.Actor):
     
         self.offset = lerp.vector2_lerp(self.offset, self.offset_target, self.lerp_speed)
  
-        camera = engine.draw_passes["Main"].camera
-        camera.position = lerp.vector2_lerp(
-            camera.position,
-            self.collider.position,
-            1 - 0.005 ** engine.delta_time()
-        )
-        camera.position = lerp.vector2_lerp(
-            camera.position,
-            self.offset,
-            1 - 0.005 ** engine.delta_time()
-        )
+        engine.draw_passes["Main"].camera.position += blended
 
     def add_shake(self, shake: BaseShake):
         self.shake_list.append(shake)

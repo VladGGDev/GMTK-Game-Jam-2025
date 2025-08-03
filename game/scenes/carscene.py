@@ -7,6 +7,7 @@ from game.actors.obstacle import Obstacle
 from game.actors.decalmanager import DecalManager
 from game.actors.pausemenu import PauseMenu
 from game.actors.enemyspawner import EnemySpawner
+from game.actors.cameramanager import CameraManager
 
 from game.utility.circlecollidersolver import solve_all_circle_collisions
 
@@ -50,7 +51,7 @@ class CarScene(engine.Scene):
             obstacles.append(Obstacle(rand_pos, settings[0], obstacle_sheet.texture, settings[1], obstacle_sheet[settings[2]]))
         
         # Adding actors
-        super().__init__([ScoreManager(), DecalManager(), Car(), PauseMenu(), EnemySpawner()] + obstacles)
+        super().__init__([ScoreManager(), DecalManager(), Car(), PauseMenu(), EnemySpawner(), CameraManager()] + obstacles)
     
     def fixed_update(self):
         super().fixed_update()
