@@ -1,9 +1,9 @@
 import engine, pygame, engine.collider as colliders, engine.tweening.lerpfuncs as lerputil, engine.tweening.easingfuncs as easings
+from math import pi, sin, cos, degrees
+
 from game.actors.decalmanager import DecalManager
 from game.actors.scoremanager import ScoreManager
-from math import pi, sin, cos, degrees
-import engine.tweening
-from engine.tweening import easingfuncs, lerpfuncs, Tween
+from game.actors.explosion import Explosion
 
 
 class Car(engine.Actor):
@@ -32,6 +32,7 @@ class Car(engine.Actor):
         self.drift_energy = 0
         self.last_dir = 0
         self.gfx_direction = self.direction
+        self.lost = False
         
         # Loop data
         self.drift_points = list[pygame.Vector2]()
@@ -45,6 +46,8 @@ class Car(engine.Actor):
         
     
     def update(self):
+        if self.lost:
+            return
         pressed = engine.get_key
         
         dir = int(pressed(pygame.K_a) or pressed(pygame.K_LEFT)) - int(pressed(pygame.K_d) or pressed(pygame.K_RIGHT))
@@ -84,6 +87,8 @@ class Car(engine.Actor):
             1 - 0.0005**engine.delta_time())
     
     def fixed_update(self):
+        if self.lost:
+            return
         # Loop logic
         if self.drift_energy > 0:
             self.drift_points.append(pygame.Vector2(self.collider.position))
@@ -118,8 +123,17 @@ class Car(engine.Actor):
         if self.drift_energy > 0:
             self.score_manager_ref.drift_distance += move
         self.score_manager_ref.total_distance += move
+        
+        # Check for collision with anything
+        for coll in colliders.all_colliders:
+            if coll.tag != "Car" and self.collider.check(coll):
+                self.lost = True
+                engine.scene_manager.current_scene.create_actor(Explosion(self.collider.position))
+                break
     
     def draw(self):
+        if self.lost:
+            return
         direction = degrees(self.direction + self.gfx_direction)
         # Draw shadow
         engine.draw_passes["Main"].blit(
