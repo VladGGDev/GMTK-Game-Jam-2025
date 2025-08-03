@@ -1,10 +1,8 @@
 import engine, pygame, engine.collider
 from engine.tweening import Tween, easingfuncs, lerpfuncs
-
 from game.actors.gameendmenu import GameEndMenu
 from game.actors.pausemenu import PauseMenu
 from game.actors.scoremanager import ScoreManager
-
 from game.actors.enemy import Enemy
 from engine.tweening import Tween, easingfuncs, lerpfuncs
 import pygame.mixer

@@ -7,6 +7,9 @@ import game.scenes.carscene as carscene
 
 class EnemySpawner(engine.Actor):
 
+    enemy_sound = pygame.mixer.Sound()
+    enemy_channel = pygame.mixer.Channel(6)
+
     def __init__(self,
                 base_delay=3.0, 
                 base_cap=2, 
@@ -40,6 +43,7 @@ class EnemySpawner(engine.Actor):
         if self.timer <= 0 and self.get_num_zombies() < current_cap:
             spawn_pos = self.get_spawn_position()
             engine.scene_manager.current_scene.create_actor(Enemy(spawn_pos, random.uniform(Enemy.MIN_SPEED, Enemy.MAX_SPEED)))
+
             self.enemies_spawned_total += 1
             self.base_delay -= 0.025
             self.timer = self.get_spawn_delay()
