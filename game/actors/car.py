@@ -17,11 +17,15 @@ class Car(engine.Actor):
     pygame.mixer.init(frequency=44100, channels=2)  
     death_sound = pygame.mixer.Sound("game/sounds/Enemy Death.wav")
     blood_splatter_sound = pygame.mixer.Sound("game/sounds/Blood Splatter.wav")
+    engine_high_sound = pygame.mixer.Sound("game/sounds/Engine High.wav")
+    engine_low_sound = pygame.mixer.Sound("game/sounds/Engine Low.wav")
+    engine_medium_sound = pygame.mixer.Sound("game/sounds/Engine Med.wav")
+    drift_sound = pygame.mixer.Sound("game/sounds/Drift Start.wav")
+
     death_channel = pygame.mixer.Channel(1)
     blood_splatter_channel = pygame.mixer.Channel(2)
-    MIN_PITCH = 0.7 
-    MAX_PITCH = 1.3  
-    engine_chan = pygame.mixer.Channel(3)
+    engine = pygame.mixer.Channel(3) 
+    drift_channel = pygame.mixer.Channel(4) 
 
     def __init__(self):
         super().__init__()
@@ -89,6 +93,8 @@ class Car(engine.Actor):
             self.was_drifting = True
             # self.camera_manager_ref.add_shake(RandomShake(0.2, 1.5))
             self.camera_manager_ref.add_shake(SineShake(0.2, 1.25, 50))
+            self.drift_channel.set_volume(0.5)
+            self.drift_channel.play(self.drift_sound)
         if self.drift_energy <= 0:
             self.was_drifting = False
         
@@ -118,6 +124,16 @@ class Car(engine.Actor):
             self.gfx_direction,
             self.get_drift_additional_rotation(),
             1 - 0.0005**engine.delta_time())
+        
+        if self.speed > 150:
+            result = self.engine_high_sound
+        elif self.speed > 50:
+            result = self.engine_medium_sound
+        elif self.speed >= 0:
+            result = self.engine_low_sound
+        if result != pygame.mixer.Channel.get_sound(self.engine):
+            self.engine.set_volume(0.50)
+            self.engine.play(result)
     
     def fixed_update(self):
         if self.lost:
