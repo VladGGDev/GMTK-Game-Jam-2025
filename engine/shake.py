@@ -48,7 +48,7 @@ class SineShake(BaseShake):
         self.time += engine.delta_time()
 
         offset_x = sin(self.freq * self.time + self.phase_offset) * self.intensity
-        offset_y = cos(self.freq * self.time + self.phase_offset) * self.intensity
+        offset_y = cos(self.freq * self.time + self.phase_offset) * self.intensity * 0.5
                        
 
         self.remaining -= engine.delta_time()
