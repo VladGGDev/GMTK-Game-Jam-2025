@@ -100,7 +100,6 @@ __render_poss = dict[DrawPass, tuple[float, float]]()
 # //// Initialization ////
 # ////////////////////////
 running = True
-scene_manager = SceneManager.empty()
 
 def set_window_title(title: str):
     pygame.display.set_caption(title)
@@ -110,7 +109,7 @@ def quit():
     running = False
 
 
-def run(scene_manager_init: SceneManager | None = None,
+def run(scene_manager_init: SceneManager,
         draw_passes_init: dict[str, DrawPass] | None = None,
         fullscreen: bool = False, borderless = False, default_window_size: tuple[int, int] = (0, 0)):
     pygame.init()
@@ -139,11 +138,9 @@ def run(scene_manager_init: SceneManager | None = None,
         window.size = default_window_size
         window.position = (0, 32) # Make handle visible
     
-    # Initialization checking
-    if scene_manager_init != None:
-        scene_manager = scene_manager_init
-    elif scene_manager.current_scene == None:
-        raise ValueError("Scene manager was not initialized")
+    # Initializing scene manager and draw passes
+    global scene_manager
+    scene_manager = scene_manager_init
     
     if draw_passes_init != None:
         draw_passes = draw_passes_init

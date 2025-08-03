@@ -7,43 +7,50 @@ class MainMenuScene(engine.Scene):
         super().__init__([])
         self.selected_button = 0
         self.NUM_BUTTONS = 3
+        self.how_texture = pygame.image.load("game/sprites/Controls.png")
+        self.show_controls = False
+        self.background = pygame.image.load("game/sprites/Menu Background.png")
+        self.background.set_alpha(195)
     
     def start(self):
         middle_x = Text.get_position("UI", (0.5, 0))[0]
+        self.title_font = pygame.font.Font("game/fonts/DigitalDisco.ttf", 48)
+        self.button_font = pygame.font.Font("game/fonts/EnterCommand-Bold.ttf", 32)
         self.last_mouse_pos = engine.get_mouse_pos("UI")
         self.play_button =  SelectableButton((middle_x, 155),
-                   pygame.font.Font(None, 32),
-                   "Play",
-                   pygame.Color("black"),
-                   None,
-                   pygame.Color("black"),
-                   pygame.Color((0, 0, 0, 64)),
-                   lambda : engine.scene_manager.change_scene("Car"),
-                   padding=(10, 10))
+                    self.button_font,
+                    "Play",
+                    pygame.Color("black"),
+                    None,
+                    pygame.Color("black"),
+                    pygame.Color((0, 0, 0, 64)),
+                    lambda : engine.scene_manager.change_scene("Car"),
+                    padding=(10, 10))
         self.play_button.selected = True
         self.how_button = SelectableButton((middle_x, 195),
-                   pygame.font.Font(None, 32),
-                   "How to play",
-                   pygame.Color("black"),
-                   None,
-                   pygame.Color("black"),
-                   pygame.Color((0, 0, 0, 64)),
-                   lambda : print("How to play"),
-                   padding=(10, 10))
+                    self.button_font,
+                    "How to play",
+                    pygame.Color("black"),
+                    None,
+                    pygame.Color("black"),
+                    pygame.Color((0, 0, 0, 64)),
+                    on_click=lambda : self.toggle_show_controls(True),
+                    on_deselected=lambda : self.toggle_show_controls(False),
+                    padding=(10, 10))
         self.quit_button = SelectableButton((middle_x, 235),
-                   pygame.font.Font(None, 32),
-                   "Quit",
-                   pygame.Color("black"),
-                   None,
-                   pygame.Color("black"),
-                   pygame.Color((0, 0, 0, 64)),
-                   lambda : engine.quit(),
-                   padding=(10, 10))
+                    self.button_font,
+                    "Quit",
+                    pygame.Color("black"),
+                    None,
+                    pygame.Color("black"),
+                    pygame.Color((0, 0, 0, 64)),
+                    lambda : engine.quit(),
+                    padding=(10, 10))
         
         self.actors.extend([
-            Text((middle_x, 65),
-                pygame.font.Font(None, 72),
-                "Game Title",
+            Text((middle_x, 60),
+                self.title_font,
+                "Dune Drifter",
                 pygame.Color("black")),
                 
             self.play_button,
@@ -71,6 +78,7 @@ class MainMenuScene(engine.Scene):
             self.play_button.selected = True
         elif self.selected_button == 1: 
             self.how_button.selected = True
+            pass
         elif self.selected_button == 2: 
             self.quit_button.selected = True
         
@@ -80,3 +88,12 @@ class MainMenuScene(engine.Scene):
         self.last_mouse_pos = engine.get_mouse_pos("UI")
         
         return super().update()
+    
+    def draw(self):
+        if self.show_controls:
+            engine.draw_passes["UI"].blit(1, self.how_texture, (0, 0), pivot=(0, 0))
+        engine.draw_passes["UI"].blit(-1, self.background, (0, 0), pivot=(0, 0))
+        return super().draw()
+    
+    def toggle_show_controls(self, toggle: bool):
+        self.show_controls = toggle

@@ -1,8 +1,10 @@
 import engine, pygame, engine.collider as colliders, engine.tweening.lerpfuncs as lerputil, engine.tweening.easingfuncs as easings
-from game.actors.decalmanager import DecalManager
 from math import pi, sin, cos, degrees
-import engine.tweening
-from engine.tweening import easingfuncs, lerpfuncs, Tween
+
+from game.actors.decalmanager import DecalManager
+from game.actors.scoremanager import ScoreManager
+from game.actors.explosion import Explosion
+import game.scenes.carscene as carscene
 
 
 class Car(engine.Actor):
@@ -31,6 +33,7 @@ class Car(engine.Actor):
         self.drift_energy = 0
         self.last_dir = 0
         self.gfx_direction = self.direction
+        self.lost = False
         
         # Loop data
         self.drift_points = list[pygame.Vector2]()
@@ -40,9 +43,13 @@ class Car(engine.Actor):
         self.collider = colliders.CircleCollider(pygame.Vector2(0, 0), 4, "Car")
         self.decal_manager_ref = engine.scene_manager.current_scene.get_actor(DecalManager)
         self.skid_mark_sprite = pygame.image.load("game/sprites/Skid Marks.png")
+        self.score_manager_ref = engine.scene_manager.current_scene.get_actor(ScoreManager)
+        engine.draw_passes["Main"].camera.position = (0, 0)
         
     
     def update(self):
+        if self.lost:
+            return
         pressed = engine.get_key
         
         dir = int(pressed(pygame.K_a) or pressed(pygame.K_LEFT)) - int(pressed(pygame.K_d) or pressed(pygame.K_RIGHT))
@@ -67,12 +74,13 @@ class Car(engine.Actor):
         # Steering controls
         self.direction += dir * turn_sp * engine.delta_time() * (self.speed / max_sp)
         
-        # Move camera to position
-        # engine.draw_passes["Main"].camera.position = self.collider.position
+        # Clamp camera position to scene bounds
+        cam_max = pygame.Vector2(carscene.CarScene.HALF_MAP_SIZE) - pygame.Vector2(engine.draw_passes["Main"].camera.half_resolution)
+        clamped_position = self.v2_clamp(self.collider.position, cam_max)
         # Framerate-independent damping
         engine.draw_passes["Main"].camera.position = lerputil.vector2_lerp(
             pygame.Vector2(engine.draw_passes["Main"].camera.position),
-            self.collider.position,
+            clamped_position,
             1 - 0.005**engine.delta_time())
         
         # Smooth direction
@@ -82,6 +90,8 @@ class Car(engine.Actor):
             1 - 0.0005**engine.delta_time())
     
     def fixed_update(self):
+        if self.lost:
+            return
         # Loop logic
         if self.drift_energy > 0:
             self.drift_points.append(pygame.Vector2(self.collider.position))
@@ -94,10 +104,12 @@ class Car(engine.Actor):
             if len(self.drift_points) > 1:
                 # Check for completed loop
                 if Car.segment_intersects_polygon(self.drift_points[-2], self.drift_points[-1], self.drift_points[:-2]):
+                    self.score_manager_ref.total_loops += 1
                     # Kill enemies inside the loop
                     # for enemy in engine.scene_manager.current_scene.get_actors(Enemy):
                     #     if Car.point_inside_polygon(enemy.collider.position, self.drift_points):
                     #         # Kill
+                    #         # Add score
                     # Clear the polygon
                     self.drift_points.clear()
         else:
@@ -109,8 +121,26 @@ class Car(engine.Actor):
             move * -sin(self.direction),
             move * -cos(self.direction)
         )
+        
+        # Changing values in score manager
+        if self.drift_energy > 0:
+            self.score_manager_ref.drift_distance += move / 8
+        self.score_manager_ref.total_distance += move / 8
+        
+        # Check for collision with anything
+        for coll in colliders.all_colliders:
+            if coll.tag != "Car" and self.collider.check(coll):
+                self.lost = True
+                engine.scene_manager.current_scene.create_actor(Explosion(self.collider.position))
+                break
+        
+        # Clamp position to scene bounds
+        self.collider.position = self.v2_clamp(self.collider.position, pygame.Vector2(carscene.CarScene.HALF_MAP_SIZE))
+        
     
     def draw(self):
+        if self.lost:
+            return
         direction = degrees(self.direction + self.gfx_direction)
         # Draw shadow
         engine.draw_passes["Main"].blit(
@@ -132,6 +162,10 @@ class Car(engine.Actor):
     
     def get_drift_additional_rotation(self) -> float:
         return self.DRIFT_GFX_DIRECTION * self.last_dir if self.drift_energy / self.MAX_DRIFT_ENERGY > self.DRIFT_GFX_MIN_PERCENTAGE else 0
+    
+    def v2_clamp(self, val: pygame.Vector2, max: pygame.Vector2):
+            clamp = pygame.math.clamp
+            return pygame.Vector2(clamp(val.x, -max.x, max.x), clamp(val.y, -max.y, max.y))
     
     
     

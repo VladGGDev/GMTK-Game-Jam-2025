@@ -11,13 +11,13 @@ engine.run(
     engine.SceneManager(
         {
             # Tests
-            "Coll solver": tests.circlecollisionsolvertestscene.CircleCollisionSolverTestScene(),
-            "UI" : tests.uitestscene.UiTestScene(),
-            "Camera Shake" : tests.shaketest.ShakeTest(),
+            "Coll solver": (tests.circlecollisionsolvertestscene.CircleCollisionSolverTestScene, ()),
+            "UI" : (tests.uitestscene.UiTestScene, ()),
+            "Camera Shake" : (tests.shaketest.ShakeTest, ()),
             
             # Game
-            "Car" : game.scenes.carscene.CarScene(),
-            "Main Menu" : game.scenes.mainmenuscene.MainMenuScene(),
+            "Car" : (game.scenes.carscene.CarScene, ()),
+            "Main Menu" : (game.scenes.mainmenuscene.MainMenuScene, ()),
         },
         "Main Menu"
     ),
